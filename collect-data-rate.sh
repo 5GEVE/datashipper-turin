@@ -47,8 +47,9 @@ done
 shift $((OPTIND-1))
 
 # With Tshark
-tshark --interface ${IFACE} -q -z conv,tcp --autostop duration:${DUR}
+#tshark --interface ${IFACE} -q -z conv,tcp --autostop duration:${DUR}
 
-# With iftop
+# With iftop (check man, intervals are predefined to 2s, 10s, 40s (cumulative)
+iftop -nN -p -P -b -B -t -i ${IFACE} -f tcp
 
 # With ifstat
