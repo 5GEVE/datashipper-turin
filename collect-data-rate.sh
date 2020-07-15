@@ -52,3 +52,7 @@ shift $((OPTIND-1))
 # With iftop (check man, intervals are predefined to 2s, 10s, 40s (cumulative)
 # Also, the command never exits. It's designed to be interactive.
 #iftop -nN -p -P -b -B -t -i ${IFACE} -f tcp
+
+# With ifstat (http://gael.roualland.free.fr/ifstat/)
+# Nice to parse, does not support filters.
+#ifstat2 -t -i ${IFACE} ${DUR}
