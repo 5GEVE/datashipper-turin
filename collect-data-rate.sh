@@ -50,6 +50,5 @@ shift $((OPTIND-1))
 #tshark --interface ${IFACE} -q -z conv,tcp --autostop duration:${DUR}
 
 # With iftop (check man, intervals are predefined to 2s, 10s, 40s (cumulative)
-iftop -nN -p -P -b -B -t -i ${IFACE} -f tcp
-
-# With ifstat
+# Also, the command never exits. It's designed to be interactive.
+#iftop -nN -p -P -b -B -t -i ${IFACE} -f tcp
