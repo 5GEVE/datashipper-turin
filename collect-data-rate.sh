@@ -22,11 +22,12 @@ echo "\
 ${__base}.sh [OPTION...]
 -h            Print this help and exit
 -i <name>     Set interface name
+-p <port>     Set tcp port to capture
 -d <seconds>  Set capture duration
 " | column -t -s ";"
 }
 
-while getopts ":hi:d:" opt; do
+while getopts ":hi:p:d:" opt; do
   case ${opt} in
     h )
       usage
@@ -34,6 +35,9 @@ while getopts ":hi:d:" opt; do
       ;;
     i )
       IFACE=${OPTARG}
+      ;;
+    p )
+      PORT=${OPTARG}
       ;;
     d )
       DUR=${OPTARG}
@@ -47,7 +51,11 @@ done
 shift $((OPTIND-1))
 
 # With Tshark
-#tshark --interface ${IFACE} -q -z conv,tcp --autostop duration:${DUR}
+tshark --interface ${IFACE} \
+        -f "tcp port ${PORT}" \
+        -q \
+        -z conv,tcp \
+        --autostop duration:${DUR}
 
 # With iftop (check man, intervals are predefined to 2s, 10s, 40s (cumulative)
 # Also, the command never exits. It's designed to be interactive.
