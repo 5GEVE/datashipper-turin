@@ -21,12 +21,16 @@ usage(){
 echo "\
 ${__base}.sh [OPTION...]
 -h            Print this help and exit
--i <name>     Set interface name
--p <port>     Set tcp port to capture
--d <seconds>  Set capture duration
+-i <name>     Set interface name (default: gateway interface from 'ip route')
+-p <port>     Set tcp port to capture (default: 80)
+-d <seconds>  Set capture duration in seconds (default: 1)
 " | column -t -s ";"
 }
 
+# defaults
+INTERFACE=$(ip route | awk '$1 == "default" {print $5; exit}')
+PORT=80
+DUR=1
 while getopts ":hi:p:d:" opt; do
   case ${opt} in
     h )
@@ -34,7 +38,7 @@ while getopts ":hi:p:d:" opt; do
       exit 0
       ;;
     i )
-      IFACE=${OPTARG}
+      INTERFACE=${OPTARG}
       ;;
     p )
       PORT=${OPTARG}
@@ -51,7 +55,7 @@ done
 shift $((OPTIND-1))
 
 # With Tshark
-tshark --interface ${IFACE} \
+tshark --interface ${INTERFACE} \
         -f "tcp port ${PORT}" \
         -q \
         -z conv,tcp \
@@ -67,8 +71,8 @@ tshark --interface ${IFACE} \
 # -s num              print one single text output afer num seconds, then quit
 # -L num              number of lines to print
 # WARNING: if filter does not match anything, it never exits
-#iftop -nN -p -i ${IFACE} -f "tcp port ${PORT}" -t -L 0 -s ${DUR}
+#iftop -nN -p -i ${INTERFACE} -f "tcp port ${PORT}" -t -L 0 -s ${DUR}
 
 # With ifstat (http://gael.roualland.free.fr/ifstat/)
 # Nice to parse, does not support filters.
-#ifstat2 -t -i ${IFACE} ${DUR}
+#ifstat2 -t -i ${INTERFACE} ${DUR}
