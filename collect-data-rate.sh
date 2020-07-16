@@ -57,9 +57,17 @@ tshark --interface ${IFACE} \
         -z conv,tcp \
         --autostop duration:${DUR}
 
-# With iftop (check man, intervals are predefined to 2s, 10s, 40s (cumulative)
-# Also, the command never exits. It's designed to be interactive.
-#iftop -nN -p -P -b -B -t -i ${IFACE} -f tcp
+# With iftop
+# -n                  don't do hostname lookups
+# -N                  don't convert port numbers to services
+# -p                  run in promiscuous mode
+# -i interface        listen on named interface
+# -f filter code      use filter code to select packets to count (default: none, but only IP packets are counted)
+# -t                  use text interface without ncurses
+# -s num              print one single text output afer num seconds, then quit
+# -L num              number of lines to print
+# WARNING: if filter does not match anything, it never exits
+#iftop -nN -p -i ${IFACE} -f "tcp port ${PORT}" -t -L 0 -s ${DUR}
 
 # With ifstat (http://gael.roualland.free.fr/ifstat/)
 # Nice to parse, does not support filters.
