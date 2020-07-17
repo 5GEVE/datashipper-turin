@@ -73,8 +73,8 @@ shift $((OPTIND-1))
 # WARNING: if filter does not match anything, it never exits
 while true
 do
-  iftop -nN -p -i "${INTERFACE}" -f "tcp port ${PORT}" -t -L 0 -s "${DUR}" 2>/dev/null | awk '/send and receive/ {print $8}'
-  sleep 1
+  rate=$(iftop -nN -p -i "${INTERFACE}" -f "tcp port ${PORT}" -t -L 0 -s "${DUR}" 2>/dev/null | awk '/send and receive/ {print $8}')
+  echo "${rate}"
 done
 
 # With ifstat (http://gael.roualland.free.fr/ifstat/)
