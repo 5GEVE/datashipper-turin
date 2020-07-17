@@ -18,7 +18,7 @@ __root="$(cd "$(dirname "${__dir}")" && pwd)" # <-- change this as it depends on
 
 # Help command output
 usage(){
-echo "\
+echo "
 ${__base}.sh [OPTION...]
 -h            Print this help and exit
 -i <name>     Set interface name (default: gateway interface from 'ip route')
