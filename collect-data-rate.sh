@@ -55,11 +55,11 @@ done
 shift $((OPTIND-1))
 
 # With Tshark
-tshark --interface ${INTERFACE} \
-        -f "tcp port ${PORT}" \
-        -q \
-        -z conv,tcp \
-        --autostop duration:${DUR}
+#tshark --interface ${INTERFACE} \
+#        -f "tcp port ${PORT}" \
+#        -q \
+#        -z conv,tcp \
+#        --autostop duration:${DUR}
 
 # With iftop
 # -n                  don't do hostname lookups
@@ -71,7 +71,11 @@ tshark --interface ${INTERFACE} \
 # -s num              print one single text output afer num seconds, then quit
 # -L num              number of lines to print
 # WARNING: if filter does not match anything, it never exits
-#iftop -nN -p -i ${INTERFACE} -f "tcp port ${PORT}" -t -L 0 -s ${DUR}
+while true
+do
+  iftop -nN -p -i "${INTERFACE}" -f "tcp port ${PORT}" -t -L 0 -s "${DUR}" 2>/dev/null | awk '/send and receive/ {print $8}'
+  sleep 1
+done
 
 # With ifstat (http://gael.roualland.free.fr/ifstat/)
 # Nice to parse, does not support filters.
