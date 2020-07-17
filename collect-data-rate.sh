@@ -59,6 +59,9 @@ while getopts ":hi:p:d:o:" opt; do
 done
 shift $((OPTIND-1))
 
+# Initialize output file. Use ; as separator.
+echo "timestamp;rate" > "${OUT}"
+
 # With Tshark
 #tshark --interface ${INTERFACE} \
 #        -f "tcp port ${PORT}" \
@@ -79,7 +82,7 @@ shift $((OPTIND-1))
 while true
 do
   rate=$(iftop -nN -p -i "${INTERFACE}" -f "tcp port ${PORT}" -t -L 0 -s "${DUR}" 2>/dev/null | awk '/send and receive/ {print $8}')
-  echo "${rate}"
+  echo "$(date --iso-8601='seconds');${rate}" >> "${OUT}"
 done
 
 # With ifstat (http://gael.roualland.free.fr/ifstat/)
