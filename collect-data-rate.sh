@@ -24,7 +24,7 @@ ${__base}.sh [OPTION...]
 -i <name>     Set interface name (default: gateway interface from 'ip route')
 -p <port>     Set tcp port to capture (default: 80)
 -d <seconds>  Set capture duration in seconds (default: 1)
--o <filename> Set output file name (default: rate.csv)
+-o <filename> Set output file name (default: data-rate.csv)
 " | column -t -s ";"
 }
 
@@ -32,7 +32,7 @@ ${__base}.sh [OPTION...]
 INTERFACE=$(ip route | awk '$1 == "default" {print $5; exit}')
 PORT=80
 DUR=1
-OUT=rate.csv
+OUT="data-rate.csv"
 while getopts ":hi:p:d:o:" opt; do
   case ${opt} in
     h )
