@@ -21,7 +21,7 @@ usage(){
 echo "
 ${__base}.sh [OPTION...]
 -h            Print this help and exit
--b            Set rate measurement in bits per second
+-b            Set rate measurement in bits per second (default: bytes)
 -i <name>     Set interface name (default: gateway interface from 'ip route')
 -a <address>  Set host address to capture (default: all)
 -p <port>     Set tcp port to capture (default: all)
