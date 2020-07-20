@@ -3,7 +3,7 @@
 set -o errexit
 set -o pipefail
 set -o nounset
-# set -o xtrace
+#set -o xtrace
 
 # Set magic variables for current file & dir
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -25,6 +25,7 @@ ${__base}.sh [OPTION...]
 -p <port>     Set tcp port to capture (default: 80)
 -d <seconds>  Set capture duration in seconds (default: 1)
 -o <filename> Set output file name (default: data-rate.csv)
+-v            Set verbose output
 " | column -t -s ";"
 }
 
@@ -32,8 +33,9 @@ ${__base}.sh [OPTION...]
 INTERFACE=$(ip route | awk '$1 == "default" {print $5; exit}')
 PORT=80
 DUR=1
+VERBOSE=0
 OUT="data-rate.csv"
-while getopts ":hi:p:d:o:" opt; do
+while getopts ":hi:p:d:o:v" opt; do
   case ${opt} in
     h )
       usage
@@ -51,6 +53,9 @@ while getopts ":hi:p:d:o:" opt; do
     o )
       OUT=${OPTARG}
       ;;
+    v )
+      VERBOSE=1
+      ;;
     \? )
       usage
       exit 2
@@ -58,6 +63,13 @@ while getopts ":hi:p:d:o:" opt; do
   esac
 done
 shift $((OPTIND-1))
+
+function log() {
+  if [ "${VERBOSE}" = 1 ]; then
+    datestring=$(date --iso-8601='seconds')
+    echo -e "$datestring - $*"
+  fi
+}
 
 # Initialize output file. Use ; as separator.
 echo "timestamp;rate" > "${OUT}"
@@ -72,9 +84,9 @@ do
           -q \
           -z io,stat,0,BYTES \
           2>/dev/null | awk '/\|\s+BYTES\s+\|/ {getline;getline;print $6}')
-  echo "bytes=$bytes"
+  log "bytes=$bytes"
   [ -z "${bytes}" ] && rate=0 || rate=$(echo "scale=2; $bytes/$DUR" | bc)
-  echo "rate=$rate"
+  log "rate=$rate"
   echo "$(date --iso-8601='seconds');${rate}" >> "${OUT}"
 done
 
