@@ -76,6 +76,13 @@ function log() {
   fi
 }
 
+log "multiplier $MULTIPLIER"
+log "interface $INTERFACE"
+log "port $PORT"
+log "duration $DUR second(s)"
+log "output file $OUT"
+log "verbose $VERBOSE"
+
 # Initialize output file. Use ; as separator.
 echo "timestamp;rate" > "${OUT}"
 
