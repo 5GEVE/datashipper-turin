@@ -23,7 +23,8 @@ ${__base}.sh [OPTION...]
 -h            Print this help and exit
 -b            Set rate measurement in bits per second
 -i <name>     Set interface name (default: gateway interface from 'ip route')
--p <port>     Set tcp port to capture (default: 80)
+-a <address>  Set host address to capture (default: all)
+-p <port>     Set tcp port to capture (default: all)
 -d <seconds>  Set capture duration in seconds (default: 1)
 -o <filename> Set output file name (default: data-rate.csv)
 -v            Set verbose output
@@ -33,11 +34,10 @@ ${__base}.sh [OPTION...]
 # defaults
 MULTIPLIER=1
 INTERFACE=$(ip route | awk '$1 == "default" {print $5; exit}')
-PORT=80
 DUR=1
 VERBOSE=0
 OUT="data-rate.csv"
-while getopts ":hbi:p:d:o:v" opt; do
+while getopts ":hbi:a:p:d:o:v" opt; do
   case ${opt} in
     h )
       usage
@@ -48,6 +48,9 @@ while getopts ":hbi:p:d:o:v" opt; do
       ;;
     i )
       INTERFACE=${OPTARG}
+      ;;
+    a )
+      ADDRESS=${OPTARG}
       ;;
     p )
       PORT=${OPTARG}
@@ -78,24 +81,28 @@ function log() {
 
 log "multiplier $MULTIPLIER"
 log "interface $INTERFACE"
-log "port $PORT"
 log "duration $DUR second(s)"
 log "output file $OUT"
 log "verbose $VERBOSE"
 
+# Prepare arguments for Tshark
+ARGS=(--interface "${INTERFACE}" --autostop "duration:${DUR}" -q -z "io,stat,0,BYTES")
+if [ -v ADDRESS ] && [ -v PORT  ]; then
+  ARGS+=(-f "host ${ADDRESS} and tcp port ${PORT}")
+elif [ -v ADDRESS ]; then
+  ARGS+=(-f "host ${ADDRESS}")
+elif [ -v PORT ]; then
+  ARGS+=(-f "tcp port ${PORT}")
+fi
+log "tshark args: ${ARGS[*]}"
+
 # Initialize output file. Use ; as separator.
 echo "timestamp;rate" > "${OUT}"
-
 while true
 do
   # With Tshark
   # You should add your user to wireshark group: gpasswd -a $USER wireshark
-  bytes=$(tshark --interface "${INTERFACE}" \
-          -f "tcp port ${PORT}" \
-          --autostop duration:"${DUR}" \
-          -q \
-          -z io,stat,0,BYTES \
-          2>/dev/null | awk '/\|\s+BYTES\s+\|/ {getline;getline;print $6}')
+  bytes=$(tshark "${ARGS[@]}" 2>/dev/null | awk '/\|\s+BYTES\s+\|/ {getline;getline;print $6}')
   log "bytes=$bytes"
   [ -z "${bytes}" ] && rate=0 || rate=$(echo "scale=2; $bytes*$MULTIPLIER/$DUR" | bc)
   log "rate=$rate"
