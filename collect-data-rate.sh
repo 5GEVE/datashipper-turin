@@ -21,6 +21,7 @@ usage(){
 echo "
 ${__base}.sh [OPTION...]
 -h            Print this help and exit
+-b            Set rate measurement in bits per second
 -i <name>     Set interface name (default: gateway interface from 'ip route')
 -p <port>     Set tcp port to capture (default: 80)
 -d <seconds>  Set capture duration in seconds (default: 1)
@@ -30,16 +31,20 @@ ${__base}.sh [OPTION...]
 }
 
 # defaults
+MULTIPLIER=1
 INTERFACE=$(ip route | awk '$1 == "default" {print $5; exit}')
 PORT=80
 DUR=1
 VERBOSE=0
 OUT="data-rate.csv"
-while getopts ":hi:p:d:o:v" opt; do
+while getopts ":hbi:p:d:o:v" opt; do
   case ${opt} in
     h )
       usage
       exit 0
+      ;;
+    b )
+      MULTIPLIER=8
       ;;
     i )
       INTERFACE=${OPTARG}
@@ -85,7 +90,7 @@ do
           -z io,stat,0,BYTES \
           2>/dev/null | awk '/\|\s+BYTES\s+\|/ {getline;getline;print $6}')
   log "bytes=$bytes"
-  [ -z "${bytes}" ] && rate=0 || rate=$(echo "scale=2; $bytes/$DUR" | bc)
+  [ -z "${bytes}" ] && rate=0 || rate=$(echo "scale=2; $bytes*$MULTIPLIER/$DUR" | bc)
   log "rate=$rate"
   echo "$(date --iso-8601='seconds');${rate}" >> "${OUT}"
 done
