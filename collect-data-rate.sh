@@ -32,6 +32,7 @@ ${__base}.sh [OPTION...]
 }
 
 # defaults
+UNIT=Bps
 MULTIPLIER=1
 INTERFACE=$(ip route | awk '$1 == "default" {print $5; exit}')
 DUR=1
@@ -44,6 +45,7 @@ while getopts ":hbi:a:p:d:o:v" opt; do
       exit 0
       ;;
     b )
+      UNIT=bps
       MULTIPLIER=8
       ;;
     i )
@@ -96,17 +98,19 @@ elif [ -v PORT ]; then
 fi
 log "tshark args: ${ARGS[*]}"
 
-# Initialize output file. Use ; as separator.
-echo "timestamp;rate" > "${OUT}"
+# Initialize output file. Use , as separator.
+echo "metric_value,timestamp,unit,device_id,context" > "${OUT}"
 while true
 do
   # With Tshark
   # You should add your user to wireshark group: gpasswd -a $USER wireshark
   bytes=$(tshark "${ARGS[@]}" 2>/dev/null | awk '/\|\s+BYTES\s+\|/ {getline;getline;print $6}')
+  timestamp=$(echo "scale=2; $(date +%s%N)/1000000" | bc)
+
   log "bytes=$bytes"
   [ -z "${bytes}" ] && rate=0 || rate=$(echo "scale=2; $bytes*$MULTIPLIER/$DUR" | bc)
   log "rate=$rate"
-  echo "$(date --iso-8601='seconds');${rate}" >> "${OUT}"
+  echo "${rate},${timestamp},${UNIT},$(hostname -f)," >> "${OUT}"
 done
 
 # With iftop
