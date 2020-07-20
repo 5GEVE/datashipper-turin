@@ -62,12 +62,20 @@ shift $((OPTIND-1))
 # Initialize output file. Use ; as separator.
 echo "timestamp;rate" > "${OUT}"
 
-# With Tshark
-#tshark --interface ${INTERFACE} \
-#        -f "tcp port ${PORT}" \
-#        -q \
-#        -z conv,tcp \
-#        --autostop duration:${DUR}
+while true
+do
+  # With Tshark
+  bytes=$(tshark --interface "${INTERFACE}" \
+          -f "tcp port ${PORT}" \
+          --autostop duration:"${DUR}" \
+          -q \
+          -z io,stat,0,BYTES \
+          2>/dev/null | awk '/\|\s+BYTES\s+\|/ {getline;getline;print $6}')
+  echo "bytes=$bytes"
+  [ -z "${bytes}" ] && rate=0 || rate=$(echo "scale=2; $bytes/$DUR" | bc)
+  echo "rate=$rate"
+  echo "$(date --iso-8601='seconds');${rate}" >> "${OUT}"
+done
 
 # With iftop
 # -n                  don't do hostname lookups
@@ -79,11 +87,11 @@ echo "timestamp;rate" > "${OUT}"
 # -s num              print one single text output afer num seconds, then quit
 # -L num              number of lines to print
 # WARNING: if filter does not match anything, it never exits
-while true
-do
-  rate=$(iftop -nN -p -i "${INTERFACE}" -f "tcp port ${PORT}" -t -L 0 -s "${DUR}" 2>/dev/null | awk '/send and receive/ {print $8}')
-  echo "$(date --iso-8601='seconds');${rate}" >> "${OUT}"
-done
+#while true
+#do
+#  rate=$(iftop -nN -p -i "${INTERFACE}" -f "tcp port ${PORT}" -t -L 0 -s "${DUR}" 2>/dev/null | awk '/send and receive/ {print $8}')
+#  echo "$(date --iso-8601='seconds');${rate}" >> "${OUT}"
+#done
 
 # With ifstat (http://gael.roualland.free.fr/ifstat/)
 # Nice to parse, does not support filters.
