@@ -112,23 +112,3 @@ do
   log "rate=$rate"
   echo "${rate},${timestamp},${UNIT},$(hostname -f)," >> "${OUT}"
 done
-
-# With iftop
-# -n                  don't do hostname lookups
-# -N                  don't convert port numbers to services
-# -p                  run in promiscuous mode
-# -i interface        listen on named interface
-# -f filter code      use filter code to select packets to count (default: none, but only IP packets are counted)
-# -t                  use text interface without ncurses
-# -s num              print one single text output afer num seconds, then quit
-# -L num              number of lines to print
-# WARNING: if filter does not match anything, it never exits
-#while true
-#do
-#  rate=$(iftop -nN -p -i "${INTERFACE}" -f "tcp port ${PORT}" -t -L 0 -s "${DUR}" 2>/dev/null | awk '/send and receive/ {print $8}')
-#  echo "$(date --iso-8601='seconds');${rate}" >> "${OUT}"
-#done
-
-# With ifstat (http://gael.roualland.free.fr/ifstat/)
-# Nice to parse, does not support filters.
-#ifstat2 -t -i ${INTERFACE} ${DUR}
