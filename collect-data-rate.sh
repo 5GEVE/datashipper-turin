@@ -65,6 +65,7 @@ echo "timestamp;rate" > "${OUT}"
 while true
 do
   # With Tshark
+  # You should add your user to wireshark group: gpasswd -a $USER wireshark
   bytes=$(tshark --interface "${INTERFACE}" \
           -f "tcp port ${PORT}" \
           --autostop duration:"${DUR}" \
