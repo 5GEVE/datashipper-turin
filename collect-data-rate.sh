@@ -11,11 +11,6 @@ __file="${__dir}/$(basename "${BASH_SOURCE[0]}")"
 __base="$(basename "${__file}" .sh)"
 __root="$(cd "$(dirname "${__dir}")" && pwd)" # <-- change this as it depends on your app
 
-#if [ "$EUID" -ne 0 ]
-#	then echo "Must be root"
-#	exit 1
-#fi
-
 # Help command output
 usage(){
 echo "
@@ -102,13 +97,13 @@ log "tshark args: ${ARGS[*]}"
 echo "metric_value,timestamp,unit,device_id,context" > "${OUT}"
 while true
 do
-  # With Tshark
-  # You should add your user to wireshark group: gpasswd -a $USER wireshark
   bytes=$(tshark "${ARGS[@]}" 2>/dev/null | awk '/\|\s+BYTES\s+\|/ {getline;getline;print $6}')
   timestamp=$(echo "scale=2; $(date +%s%N)/1000000" | bc)
 
-  log "bytes=$bytes"
+  log "bytes measured in $DUR seconds: $bytes"
   [ -z "${bytes}" ] && rate=0 || rate=$(echo "scale=2; $bytes*$MULTIPLIER/$DUR" | bc)
-  log "rate=$rate"
-  echo "${rate},${timestamp},${UNIT},$(hostname -f)," >> "${OUT}"
+  log "rate: $rate$UNIT"
+  csvline="${rate},${timestamp},${UNIT},$(hostname -f),"
+  log "csvline: $csvline"
+  echo "$csvline" >> "${OUT}"
 done
