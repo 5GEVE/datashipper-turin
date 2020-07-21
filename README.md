@@ -8,8 +8,7 @@ Script to collect data rate for a use-case.
 Traffic can be filtered by host and port.
 Run `./collect-data-rate.sh -h` for available options.
 
-*Requirements*
-
+*Requirements:*
 - Install Tshark: `sudo apt install tshark`
 - Add your user to `wireshark` group: `gpasswd -a $USER wireshark`
 - Install Basic Calculator and GNU Awk: `sudo apt install bc gawk`
