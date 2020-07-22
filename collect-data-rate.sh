@@ -16,28 +16,33 @@ usage(){
 echo "
 ${__base}.sh [OPTION...]
 -h            Print this help and exit
+-d            Set device id (default: hostname -f)
 -b            Set rate measurement in bits per second (default: bytes)
 -i <name>     Set interface name (default: gateway interface from 'ip route')
 -a <address>  Set host address to capture (default: all)
 -p <port>     Set tcp port to capture (default: all)
--d <seconds>  Set capture duration in seconds (default: 1)
+-t <seconds>  Set sampling time in seconds (default: 1)
 -o <filename> Set output file name (default: data-rate.csv)
 -v            Set verbose output
 " | column -t -s ";"
 }
 
 # defaults
+DEVICE_ID=$(hostname -f)
 UNIT=Bps
 MULTIPLIER=1
 INTERFACE=$(ip route | awk '$1 == "default" {print $5; exit}')
 DUR=1
 VERBOSE=0
 OUT="data-rate.csv"
-while getopts ":hbi:a:p:d:o:v" opt; do
+while getopts ":hd:bi:a:p:t:o:v" opt; do
   case ${opt} in
     h )
       usage
       exit 0
+      ;;
+    d )
+      DEVICE_ID=${OPTARG}
       ;;
     b )
       UNIT=bps
@@ -52,7 +57,7 @@ while getopts ":hbi:a:p:d:o:v" opt; do
     p )
       PORT=${OPTARG}
       ;;
-    d )
+    t )
       DUR=${OPTARG}
       ;;
     o )
@@ -76,6 +81,7 @@ function log() {
   fi
 }
 
+log "device id $DEVICE_ID"
 log "multiplier $MULTIPLIER"
 log "interface $INTERFACE"
 log "duration $DUR second(s)"
@@ -103,7 +109,7 @@ do
   log "bytes measured in $DUR seconds: $bytes"
   [ -z "${bytes}" ] && rate=0 || rate=$(echo "scale=2; $bytes*$MULTIPLIER/$DUR" | bc)
   log "rate: $rate$UNIT"
-  csvline="${rate},${timestamp},${UNIT},$(hostname -f),"
+  csvline="${rate},${timestamp},${UNIT},$DEVICE_ID,"
   log "csvline: $csvline"
   echo "$csvline" >> "${OUT}"
 done

@@ -31,5 +31,5 @@ The above will send traffic to the previously created endpoint.
 Run the script to collect traffic and compute data rate:
 
 ```shell script
-./collect-data-rate.sh -i lo -p 12345 -a 127.0.0.1 -d 3 -o output/data-rate.csv -v
+./collect-data-rate.sh -i lo -p 12345 -a 127.0.0.1 -t 3 -o output/data-rate.csv -v
 ```
