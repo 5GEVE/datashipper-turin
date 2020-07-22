@@ -110,7 +110,7 @@ do
 
   log "bytes measured in $DUR seconds: $bytes"
   [ -z "${bytes}" ] && rate=0 || rate=$(echo "scale=2; $bytes*$MULTIPLIER/$DUR" | bc)
-  log "rate: $rate$UNIT"
+  log "rate: $rate $UNIT"
   csvline="${rate},${timestamp},${UNIT},$DEVICE_ID,"
   log "csvline: $csvline"
   echo "$csvline" >> "${OUT}"
