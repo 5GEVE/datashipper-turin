@@ -9,22 +9,28 @@ set -o nounset
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 __file="${__dir}/$(basename "${BASH_SOURCE[0]}")"
 __base="$(basename "${__file}" .sh)"
-__root="$(cd "$(dirname "${__dir}")" && pwd)" # <-- change this as it depends on your app
+#__root="$(cd "$(dirname "${__dir}")" && pwd)" # <-- change this as it depends on your app
 
 # Help command output
 usage(){
 echo "
 ${__base}.sh [OPTION...]
--h            Print this help and exit
--d            Set device id (default: hostname -f)
--b            Set rate measurement in bits per second (default: bytes)
--i <name>     Set interface name (default: gateway interface from 'ip route')
--a <address>  Set host address to capture (default: all)
--p <port>     Set tcp port to capture (default: all)
--t <seconds>  Set sampling time in seconds (default: 1)
--o <filename> Set output file name (default: data-rate.csv)
--v            Set verbose output
+-h; Print this help and exit
+-d; Set device id (default: hostname -f)
+-b; Set rate measurement in bits per second (default: bytes)
+-i <name>; Set interface name (default: gateway interface from 'ip route')
+-a <address>; Set host address to capture (default: all)
+-p <port>; Set tcp port to capture (default: all)
+-t <seconds>; Set sampling time in seconds (default: 1)
+-o <filename>; Set output file name (default: data-rate.csv)
+-v; Set verbose output
 " | column -t -s ";"
+}
+
+function log() {
+  if [ "${VERBOSE}" = 1 ]; then
+    echo -e "$(date --iso-8601='seconds') - $*"
+  fi
 }
 
 # defaults
@@ -74,19 +80,15 @@ while getopts ":hd:bi:a:p:t:o:v" opt; do
 done
 shift $((OPTIND-1))
 
-function log() {
-  if [ "${VERBOSE}" = 1 ]; then
-    datestring=$(date --iso-8601='seconds')
-    echo -e "$datestring - $*"
-  fi
-}
-
-log "device id $DEVICE_ID"
-log "multiplier $MULTIPLIER"
-log "interface $INTERFACE"
-log "duration $DUR second(s)"
-log "output file $OUT"
-log "verbose $VERBOSE"
+log "device id: $DEVICE_ID"
+log "unit: $UNIT"
+log "multiplier: $MULTIPLIER"
+log "interface: $INTERFACE"
+log "address: $ADDRESS"
+log "port: $PORT"
+log "duration: $DUR second(s)"
+log "output file: $OUT"
+log "verbose: $VERBOSE"
 
 # Prepare arguments for Tshark
 ARGS=(--interface "${INTERFACE}" --autostop "duration:${DUR}" -q -z "io,stat,0,BYTES")
