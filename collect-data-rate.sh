@@ -19,8 +19,9 @@ ${__base}.sh [OPTION...]
 -d; Set device id (default: hostname -f)
 -b; Set rate measurement in bits per second (default: bytes)
 -i <name>; Set interface name (default: gateway interface from 'ip route')
--a <address>; Set host address to capture (default: all)
--p <port>; Set tcp port to capture (default: all)
+-a <address>; Set host address to capture. Use multiple -a to capture multiple addresses. (default: all)
+-p <port>; Set port to capture (default: all)
+-u; Set UDP capture for port selected with '-p' (default: tcp)
 -t <seconds>; Set sampling time in seconds (default: 1)
 -o <filename>; Set output file name (default: data-rate.csv)
 -v; Set verbose output
@@ -38,10 +39,11 @@ DEVICE_ID=$(hostname -f)
 UNIT=Bps
 MULTIPLIER=1
 INTERFACE=$(ip route | awk '$1 == "default" {print $5; exit}')
+PROTO=tcp
 DUR=1
 VERBOSE=0
 OUT="data-rate.csv"
-while getopts ":hd:bi:a:p:t:o:v" opt; do
+while getopts ":hd:bi:a:p:ut:o:v" opt; do
   case ${opt} in
     h )
       usage
@@ -58,10 +60,13 @@ while getopts ":hd:bi:a:p:t:o:v" opt; do
       INTERFACE=${OPTARG}
       ;;
     a )
-      ADDRESS=${OPTARG}
+      ADDRESS+=("${OPTARG}")
       ;;
     p )
       PORT=${OPTARG}
+      ;;
+    u )
+      PROTO=udp
       ;;
     t )
       DUR=${OPTARG}
@@ -84,20 +89,28 @@ log "device id: $DEVICE_ID"
 log "unit: $UNIT"
 log "multiplier: $MULTIPLIER"
 log "interface: $INTERFACE"
-[ -v ADDRESS ] && log "address: $ADDRESS"
+[ -v ADDRESS ] && log "address(es): ${ADDRESS[*]}"
 [ -v PORT ] && log "port: $PORT"
+log "protocol: $PROTO"
 log "duration: $DUR second(s)"
 log "output file: $OUT"
 log "verbose: $VERBOSE"
 
 # Prepare arguments for Tshark
 ARGS=(--interface "${INTERFACE}" --autostop "duration:${DUR}" -q -z "io,stat,0,BYTES")
-if [ -v ADDRESS ] && [ -v PORT  ]; then
-  ARGS+=(-f "host ${ADDRESS} and tcp port ${PORT}")
-elif [ -v ADDRESS ]; then
-  ARGS+=(-f "host ${ADDRESS}")
-elif [ -v PORT ]; then
-  ARGS+=(-f "tcp port ${PORT}")
+if [ -v ADDRESS ]; then
+  ARGS+=(host "${ADDRESS}")
+  for a in "${ADDRESS[@]:1}"
+  do
+    ARGS+=(or host "${a}")
+  done
+fi
+if [ -v PORT ]; then
+  if [ -v ADDRESS ]; then
+    ARGS+=(and "${PROTO}" port "${PORT}")
+  else
+    ARGS+=("${PROTO}" port "${PORT}")
+  fi
 fi
 log "tshark args: ${ARGS[*]}"
 
