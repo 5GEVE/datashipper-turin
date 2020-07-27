@@ -93,15 +93,19 @@ log "verbose: $VERBOSE"
 # Prepare arguments for Tshark
 ARGS=(--interface "${INTERFACE}" --autostop "duration:${DUR}" -q -z "io,stat,0,BYTES")
 if [ -v ADDRESS ]; then
-  ADDRESS_F="host ${ADDRESS}"
+  ARGS+=(host "${ADDRESS}")
   for a in "${ADDRESS[@]:1}"
   do
-    ADDRESS_F+=" or host $a"
+    ARGS+=(or host "${a}")
   done
-  log "address filter: $ADDRESS_F"
 fi
-ARGS+=(-f "${ADDRESS_F}")
-
+if [ -v PORT ]; then
+  if [ -v ADDRESS ]; then
+    ARGS+=(and tcp port "${PORT}")
+  else
+    ARGS+=(tcp port "${PORT}")
+  fi
+fi
 log "tshark args: ${ARGS[*]}"
 
 # Initialize output file. Use , as separator.
