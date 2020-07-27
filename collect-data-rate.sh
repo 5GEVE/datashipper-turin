@@ -19,7 +19,7 @@ ${__base}.sh [OPTION...]
 -d; Set device id (default: hostname -f)
 -b; Set rate measurement in bits per second (default: bytes)
 -i <name>; Set interface name (default: gateway interface from 'ip route')
--a <address>; Set host address to capture (default: all)
+-a <address>; Set host address to capture. Use multiple -a to capture multiple addresses. (default: all)
 -p <port>; Set tcp port to capture (default: all)
 -t <seconds>; Set sampling time in seconds (default: 1)
 -o <filename>; Set output file name (default: data-rate.csv)
@@ -58,7 +58,7 @@ while getopts ":hd:bi:a:p:t:o:v" opt; do
       INTERFACE=${OPTARG}
       ;;
     a )
-      ADDRESS=${OPTARG}
+      ADDRESS+=("${OPTARG}")
       ;;
     p )
       PORT=${OPTARG}
@@ -84,7 +84,7 @@ log "device id: $DEVICE_ID"
 log "unit: $UNIT"
 log "multiplier: $MULTIPLIER"
 log "interface: $INTERFACE"
-[ -v ADDRESS ] && log "address: $ADDRESS"
+[ -v ADDRESS ] && log "address(es): ${ADDRESS[*]}"
 [ -v PORT ] && log "port: $PORT"
 log "duration: $DUR second(s)"
 log "output file: $OUT"
@@ -92,13 +92,16 @@ log "verbose: $VERBOSE"
 
 # Prepare arguments for Tshark
 ARGS=(--interface "${INTERFACE}" --autostop "duration:${DUR}" -q -z "io,stat,0,BYTES")
-if [ -v ADDRESS ] && [ -v PORT  ]; then
-  ARGS+=(-f "host ${ADDRESS} and tcp port ${PORT}")
-elif [ -v ADDRESS ]; then
-  ARGS+=(-f "host ${ADDRESS}")
-elif [ -v PORT ]; then
-  ARGS+=(-f "tcp port ${PORT}")
+if [ -v ADDRESS ]; then
+  ADDRESS_F="host ${ADDRESS}"
+  for a in "${ADDRESS[@]:1}"
+  do
+    ADDRESS_F+=" or host $a"
+  done
+  log "address filter: $ADDRESS_F"
 fi
+ARGS+=(-f "${ADDRESS_F}")
+
 log "tshark args: ${ARGS[*]}"
 
 # Initialize output file. Use , as separator.
