@@ -33,3 +33,55 @@ Run the script to collect traffic and compute data rate:
 ```shell script
 ./collect-data-rate.sh -i lo -p 12345 -a 127.0.0.1 -t 3 -o output/data-rate.csv -v
 ```
+
+## Filebeat
+
+Install [filebeat](https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-installation.html).
+Edit [filebeat.yml](filebeat.yml) and set the Kafka host and port.
+
+```yaml
+output.kafka:
+  hosts: ["<host>:<port>"]
+```
+
+Move to the repo folder and run:
+
+```shell script
+filebeat -e
+```
+
+### Test with Kafka
+
+Move to folder [kafka-docker](kafka-docker) and run
+
+```shell script
+docker-compose up -d
+```
+
+Now you have a Kafka broker and a zookeeper instance on your local machine.
+Set host and port in your `filebeat.yml` like this:
+
+```
+output.kafka:
+  hosts: ["localhost:9092"]
+```
+
+Run filebeat like shown above. In the log you should see something like:
+
+```
+2020-08-18T15:23:56.040+0200    INFO    [publisher_pipeline_output]     pipeline/output.go:111      Connection to kafka(localhost:9092) established
+```
+
+Then, run the [collection script](collect-data-rate.sh) as shown above.
+The filebeat will monitor the output file, read any new line and send it to Kafka in JSON format.
+
+To read Kafka messages you need to install the Kafka client. Run the following commands:
+
+```shell script
+cd ~
+git clone git@github.com:confluentinc/kafka.git
+cd kafka
+./gradlew jar
+# Wait for compilation to complete
+./bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic user_data_rate --from-beginning
+```
