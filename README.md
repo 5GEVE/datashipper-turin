@@ -50,6 +50,28 @@ Move to the repo folder and run:
 filebeat -e
 ```
 
+### Systemd service
+
+If you want to run filebeat as a systemd service, override the default configuration file:
+
+```shell script
+sudo cp ./filebeat.yml /etc/filebeat/filebeat.yml
+```
+
+Then, set the absolute path for the file to monitor, for example:
+
+```yaml
+    paths:
+        - /home/ubuntu/datashipper-turin/output/data-rate.csv
+```
+
+Start and optionally enable (start on boot) the service:
+
+```shell script
+sudo systemctl start filebeat.service
+sudo systemctl enable filebeat.service
+```
+
 ### Test with Kafka
 
 Move to folder [kafka-docker](kafka-docker) and run
