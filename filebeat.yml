@@ -1,0 +1,42 @@
+filebeat.inputs:
+  - input_type: log
+    fields:
+      # This should be set dynamically from RC with Ansible
+      topic_id: user_data_rate
+    paths:
+        - output/data-rate.csv
+
+processors:
+  - decode_csv_fields:
+      fields:
+        message: decoded_csv_arr
+      separator: ","
+      ignore_missing: false
+      overwrite_keys: true
+      trim_leading_space: false
+      fail_on_error: true
+
+  - script:
+      lang: javascript
+      id: convert_csv_into_json
+      source: >
+        function process(event) {
+            var csv_arr = event.Get("decoded_csv_arr");
+            var json_fields = ["metric_value", "timestamp", "unit", "device_id", "context"];
+            var json_from_csv =  csv_arr.reduce(function(result, field, index) {
+              result[json_fields[index]] = field;
+              return result;
+            }, {})
+            var value = {
+              value: json_from_csv
+            };
+            var record = [value];
+            event.Put("records", record);
+        }
+  - drop_fields:
+      fields: ["decoded_csv_arr"]
+
+output.kafka:
+  # Change this with site's Kafka information
+  hosts: ["localhost:9092"]
+  topic: "%{[fields][topic_id]}"
