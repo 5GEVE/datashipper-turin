@@ -4,7 +4,12 @@ filebeat.inputs:
       # This should be set dynamically from RC with Ansible
       topic_id: user_data_rate
     paths:
-        - output/data-rate.csv
+      - output/data-rate.csv
+
+output.kafka:
+  # Change this with site's Kafka information
+  hosts: ["localhost:9092"]
+  topic: "%{[fields][topic_id]}"
 
 processors:
   - decode_csv_fields:
@@ -35,8 +40,3 @@ processors:
         }
   - drop_fields:
       fields: ["decoded_csv_arr"]
-
-output.kafka:
-  # Change this with site's Kafka information
-  hosts: ["localhost:9092"]
-  topic: "%{[fields][topic_id]}"
