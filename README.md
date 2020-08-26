@@ -77,8 +77,11 @@ sudo systemctl enable filebeat.service
 Move to folder [kafka-docker](kafka-docker) and run
 
 ```shell script
+export DOCKER_HOST_IP=<host-ip-address>
 docker-compose up -d
 ```
+
+*Note* Set `DOCKER_HOST_IP` if you want to reach Kafka from outside your machine.
 
 Now you have a Kafka broker and a zookeeper instance on your local machine.
 Set host and port in your `filebeat.yml` like this:
