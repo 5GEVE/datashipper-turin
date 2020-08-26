@@ -100,13 +100,17 @@ Run filebeat like shown above. In the log you should see something like:
 Then, run the [collection script](collect-data-rate.sh) as shown above.
 The filebeat will monitor the output file, read any new line and send it to Kafka in JSON format.
 
-To read Kafka messages you need to install the Kafka client. Run the following commands:
+To read Kafka messages you need to install a Kafka client.
+We use [kafkacat](https://github.com/edenhill/kafkacat).
+
+If you are on Ubuntu, simply run:
 
 ```shell script
-cd ~
-git clone git@github.com:confluentinc/kafka.git
-cd kafka
-./gradlew jar
-# Wait for compilation to complete
-./bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic user_data_rate --from-beginning
+sudo apt install kafkacat
+
+# List topics
+kafkacat -b localhost:9092 -L
+
+# Read messages from topics
+kafkacat -b kafka-test.polito.it:9092 -C -t user_data_rate
 ```
