@@ -91,7 +91,7 @@ log "output file: $OUT"
 log "verbose: $VERBOSE"
 
 # Prepare arguments for Tshark
-ARGS=(--interface "${INTERFACE}" --autostop "duration:${DUR}" -q -z "io,stat,0,AVG(tcp.analysis.ack_rtt)tcp.analysis.ack_rtt")
+ARGS=(--interface "${INTERFACE}" --autostop "duration:${DUR}" -q -z "io,stat,0,AVG(tcp.analysis.initial_rtt)tcp.analysis.initial_rtt")
 if [ -v ADDRESS ]; then
   ARGS+=(host "${ADDRESS}")
   for a in "${ADDRESS[@]:1}"
