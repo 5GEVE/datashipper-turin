@@ -122,7 +122,7 @@ do
   timestamp=$(echo "scale=2; $(date +%s%N)/1000000" | bc)
 
   log "bytes measured in $DUR seconds: $bytes"
-  [ -z "${bytes}" ] && rate=0 || rate=$(echo "scale=2; $bytes*$MULTIPLIER/$DUR" | bc)
+  [ -z "${bytes}" ] && rate=0 || rate=$(echo "$bytes*$MULTIPLIER/$DUR" | bc | awk '{printf "%.3f", $0}')
   log "rate: $rate $UNIT"
   csvline="${rate},${timestamp},${UNIT},$DEVICE_ID,"
   log "csvline: $csvline"
