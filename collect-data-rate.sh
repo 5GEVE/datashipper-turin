@@ -17,7 +17,7 @@ echo "
 ${__base}.sh [OPTION...]
 -h; Print this help and exit
 -d; Set device id (default: hostname -f)
--b; Set rate measurement in bits per second (default: bytes)
+-b; Set rate measurement in bits per second (default: Bytes)
 -i <name>; Set interface name (default: gateway interface from 'ip route')
 -a <address>; Set host address to capture. Use multiple -a to capture multiple addresses. (default: all)
 -p <port>; Set port to capture (default: all)
