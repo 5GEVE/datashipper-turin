@@ -108,8 +108,7 @@ if [ -v PORT ]; then
 fi
 log "tshark args: ${ARGS[*]}"
 
-# Initialize output file. Use , as separator.
-echo "metric_value,timestamp,unit,device_id,context" > "${OUT}"
+log "csv headers: metric_value,timestamp,unit,device_id,context"
 while true
 do
   value=$(tshark "${ARGS[@]}" 2>/dev/null | awk '/\|\s+AVG\s+\|/ {getline;getline;print $6}')
