@@ -5,6 +5,12 @@ filebeat.inputs:
       topic_id: user_data_rate
     paths:
       - output/data-rate.csv
+  - input_type: log
+    fields:
+      # This should be set dynamically from RC with Ansible
+      topic_id: tcp-avg-rtt
+    paths:
+      - output/tcp-avg-rtt.csv
 
 output.kafka:
   # Change this with site's Kafka information
