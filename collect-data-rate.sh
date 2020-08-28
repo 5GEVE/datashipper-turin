@@ -118,13 +118,16 @@ log "tshark args: ${ARGS[*]}"
 echo "metric_value,timestamp,unit,device_id,context" > "${OUT}"
 while true
 do
-  bytes=$(tshark "${ARGS[@]}" 2>/dev/null | awk '/\|\s+BYTES\s+\|/ {getline;getline;print $6}')
+  value=$(tshark "${ARGS[@]}" 2>/dev/null | awk '/\|\s+BYTES\s+\|/ {getline;getline;print $6}')
   timestamp=$(echo "scale=2; $(date +%s%N)/1000000" | bc)
-
-  log "bytes measured in $DUR seconds: $bytes"
-  [ -z "${bytes}" ] && rate=0 || rate=$(echo "$bytes*$MULTIPLIER/$DUR" | bc | awk '{printf "%.3f", $0}')
-  log "rate: $rate $UNIT"
-  csvline="${rate},${timestamp},${UNIT},$DEVICE_ID,"
-  log "csvline: $csvline"
-  echo "$csvline" >> "${OUT}"
+  log "value measured in $DUR second(s): $value"
+  if [ "${value}" ]; then
+    rate=$(echo "$value*$MULTIPLIER/$DUR" | bc | awk '{printf "%.3f", $0}')
+    log "rate: $rate $UNIT"
+    csvline="${rate},${timestamp},${UNIT},$DEVICE_ID,"
+    log "csvline: $csvline"
+    echo "$csvline" >> "${OUT}"
+  else
+      log "no value, skip write"
+  fi
 done

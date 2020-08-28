@@ -112,13 +112,16 @@ log "tshark args: ${ARGS[*]}"
 echo "metric_value,timestamp,unit,device_id,context" > "${OUT}"
 while true
 do
-  avg=$(tshark "${ARGS[@]}" 2>/dev/null | awk '/\|\s+AVG\s+\|/ {getline;getline;print $6}')
+  value=$(tshark "${ARGS[@]}" 2>/dev/null | awk '/\|\s+AVG\s+\|/ {getline;getline;print $6}')
   timestamp=$(echo "scale=2; $(date +%s%N)/1000000" | bc)
-
-  log "average RTT measured in $DUR seconds: $avg"
-  [ -z "${avg}" ] && rtt=0 || rtt=$(echo "$avg*$MULTIPLIER" | bc | awk '{printf "%.3f", $0}')
-  log "rtt: $rtt $UNIT"
-  csvline="${rtt},${timestamp},${UNIT},$DEVICE_ID,"
-  log "csvline: $csvline"
-  echo "$csvline" >> "${OUT}"
+  log "value measured in $DUR second(s): $value"
+  if [ "${value}" ] && [ "${value}" != 0.000000 ]; then
+    rtt=$(echo "$value*$MULTIPLIER" | bc | awk '{printf "%.3f", $0}')
+    log "rtt: $rtt $UNIT"
+    csvline="${rtt},${timestamp},${UNIT},$DEVICE_ID,"
+    log "csvline: $csvline"
+    echo "$csvline" >> "${OUT}"
+  else
+      log "no value, skip write"
+  fi
 done
