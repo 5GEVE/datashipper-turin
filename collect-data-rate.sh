@@ -127,6 +127,6 @@ do
     log "csvline: $csvline"
     echo "$csvline" >> "${OUT}"
   else
-      log "no value, skip write"
+    log "no value, skip write"
   fi
 done
