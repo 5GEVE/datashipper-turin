@@ -2,7 +2,7 @@
 
 A collection of scripts to collect and publish infrastructure metrics on the 5G EVE platform.
 
-## collect-data-rate.sh
+## [collect-data-rate.sh](collect-data-rate.sh)
 
 Script to collect data rate for a use-case.
 Traffic can be filtered by host and port.
@@ -33,6 +33,22 @@ Run the script to collect traffic and compute data rate:
 ```shell script
 ./collect-data-rate.sh -i lo -p 12345 -a 127.0.0.1 -t 3 -o output/data-rate.csv -v
 ```
+
+## [collect-tcp-avg-rtt.sh](collect-tcp-avg-rtt.sh)
+
+Script to collect the average initial rtt (irtt) of TCP connections for a use-case.
+Traffic can be filtered by host and port.
+Run `./collect-tcp-avg-rtt.sh -h` for available options.
+
+The script relies on `tcp.analysis.initial_rtt` field computed by Tshark.
+To collect samples, the script needs to capture the TCP handshake at the beginning of new sessions (if TCP sessions are very long new values can be not available for a long time).
+Thus, the script can produce a limited number of samples, not consistent with the `-t` parameter. 
+Field `tcp.analysis.ack_rtt` could also be used but it doesn't work on mirrored traffic captures: only TCP connections to or from the capturing host work with this field.
+
+*Requirements:*
+- Install Tshark: `sudo apt install tshark`
+- Add your user to `wireshark` group: `gpasswd -a $USER wireshark`
+- Install Basic Calculator and GNU Awk: `sudo apt install bc gawk`
 
 ## Filebeat
 
