@@ -4,11 +4,15 @@
   become: yes
 
   tasks:
+    - name: Set python3 as default
+      alternatives:
+        name: python
+        path: /usr/bin/python3
     # Collectors scripts
     - name: Install packages
       apt:
         update_cache: yes
-        name: [ tshark, bc, gawk, procps ]
+        name: [ tshark, bc, gawk, procps, python3-yaml ]
     - name: Ensure /opt/data-rate directory exists
       file:
         path: /opt/data-rate/output
