@@ -43,16 +43,16 @@
     - name: Install filebeat package
       apt:
         deb: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.8.1-amd64.deb
-    - name: Backup filebeat configuration
+    - name: Backup original filebeat configuration
       command: mv /etc/filebeat/filebeat.yml /etc/filebeat/filebeat.yml.bak
-    - name: Copy filebeat configuration
+    - name: Copy new filebeat configuration (no inputs)
       copy:
         src: filebeat.yml
         dest: /etc/filebeat/filebeat.yml
         owner: root
         group: root
         mode: '0644'
-    - name: restart filebeat service
+    - name: Stop filebeat service
       systemd:
         state: stopped
         daemon_reload: yes
