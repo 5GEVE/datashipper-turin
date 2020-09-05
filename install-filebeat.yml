@@ -1,0 +1,63 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  become: yes
+
+  tasks:
+    - name: Set python3 as default
+      alternatives:
+        name: python
+        path: /usr/bin/python3
+    # Collectors scripts
+    - name: Install packages
+      apt:
+        update_cache: yes
+        name: [ tshark, bc, gawk, procps, python3-yaml ]
+    - name: Ensure /opt/data-rate directory exists
+      file:
+        path: /opt/data-rate/output
+        recurse: yes
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Copy collect-data-rate.sh
+      copy:
+        src: collect-data-rate.sh
+        dest: /opt/data-rate/collect-data-rate
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Ensure /opt/tcp-avg-rtt directory exists
+      file:
+        path: /opt/tcp-avg-rtt/output
+        recurse: yes
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Copy collect-tcp-avg-rtt.sh
+      copy:
+        src: collect-tcp-avg-rtt.sh
+        dest: /opt/tcp-avg-rtt/collect-tcp-avg-rtt
+        owner: root
+        group: root
+        mode: '0755'
+    # Filebeat
+    - name: Install filebeat package
+      apt:
+        deb: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.8.1-amd64.deb
+    - name: Backup original filebeat configuration
+      command: mv /etc/filebeat/filebeat.yml /etc/filebeat/filebeat.yml.bak
+    - name: Copy new filebeat configuration (no inputs)
+      copy:
+        src: filebeat.yml
+        dest: /etc/filebeat/filebeat.yml
+        owner: root
+        group: root
+        mode: '0644'
+    - name: Stop filebeat service
+      systemd:
+        state: stopped
+        daemon_reload: yes
+        name: filebeat
