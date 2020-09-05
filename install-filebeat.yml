@@ -4,14 +4,12 @@
   become: yes
 
   tasks:
-    - name: install packages
+    # Collectors scripts
+    - name: Install packages
       apt:
         update_cache: yes
         name: [ tshark, bc, gawk, procps ]
-    - name: Install filebeat package
-      apt:
-        deb: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.8.1-amd64.deb
-    - name: ensure /opt/data-rate directory exists
+    - name: Ensure /opt/data-rate directory exists
       file:
         path: /opt/data-rate/output
         recurse: yes
@@ -19,14 +17,14 @@
         owner: root
         group: root
         mode: '0755'
-    - name: copy collect-data-rate.sh
+    - name: Copy collect-data-rate.sh
       copy:
         src: collect-data-rate.sh
         dest: /opt/data-rate/collect-data-rate
         owner: root
         group: root
         mode: '0755'
-    - name: ensure /opt/tcp-avg-rtt directory exists
+    - name: Ensure /opt/tcp-avg-rtt directory exists
       file:
         path: /opt/tcp-avg-rtt/output
         recurse: yes
@@ -34,10 +32,28 @@
         owner: root
         group: root
         mode: '0755'
-    - name: copy collect-tcp-avg-rtt.sh
+    - name: Copy collect-tcp-avg-rtt.sh
       copy:
         src: collect-tcp-avg-rtt.sh
         dest: /opt/tcp-avg-rtt/collect-tcp-avg-rtt
         owner: root
         group: root
         mode: '0755'
+    # Filebeat
+    - name: Install filebeat package
+      apt:
+        deb: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.8.1-amd64.deb
+    - name: Backup filebeat configuration
+      command: mv /etc/filebeat/filebeat.yml /etc/filebeat/filebeat.yml.bak
+    - name: Copy filebeat configuration
+      copy:
+        src: filebeat.yml
+        dest: /etc/filebeat/filebeat.yml
+        owner: root
+        group: root
+        mode: '0644'
+    - name: restart filebeat service
+      systemd:
+        state: stopped
+        daemon_reload: yes
+        name: filebeat
