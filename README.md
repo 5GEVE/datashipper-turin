@@ -2,7 +2,17 @@
 
 A collection of scripts to collect and publish infrastructure metrics on the 5G EVE platform.
 
-## [collect-data-rate.sh](collect-data-rate.sh)
+## Install on site
+
+Install everything by running the provided Ansible playbook:
+```shell script
+ansible-playbook -i "<host-ip-address>," install-filebeat.yml
+```
+*Note*: do not forget the comma after the `<host-ip-address>`
+
+## Collectors
+
+### [collect-data-rate.sh](collect-data-rate.sh)
 
 Script to collect data rate for a use-case.
 Traffic can be filtered by host and port.
@@ -34,7 +44,7 @@ Run the script to collect traffic and compute data rate:
 ./collect-data-rate.sh -i lo -p 12345 -a 127.0.0.1 -t 3 -o output/data-rate.csv -v
 ```
 
-## [collect-tcp-avg-rtt.sh](collect-tcp-avg-rtt.sh)
+### [collect-tcp-avg-rtt.sh](collect-tcp-avg-rtt.sh)
 
 Script to collect the average initial rtt (irtt) of TCP connections for a use-case.
 Traffic can be filtered by host and port.
@@ -66,7 +76,7 @@ Move to the repo folder and run:
 filebeat -e
 ```
 
-### Systemd service
+### As a Systemd service
 
 If you want to run filebeat as a systemd service, override the default configuration file:
 
