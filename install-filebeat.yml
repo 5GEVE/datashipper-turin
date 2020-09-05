@@ -1,0 +1,43 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  become: yes
+
+  tasks:
+    - name: install packages
+      apt:
+        update_cache: yes
+        name: [ tshark, bc, gawk, procps ]
+    - name: Install filebeat package
+      apt:
+        deb: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.8.1-amd64.deb
+    - name: ensure /opt/data-rate directory exists
+      file:
+        path: /opt/data-rate/output
+        recurse: yes
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+    - name: copy collect-data-rate.sh
+      copy:
+        src: collect-data-rate.sh
+        dest: /opt/data-rate/collect-data-rate
+        owner: root
+        group: root
+        mode: '0755'
+    - name: ensure /opt/tcp-avg-rtt directory exists
+      file:
+        path: /opt/tcp-avg-rtt/output
+        recurse: yes
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+    - name: copy collect-tcp-avg-rtt.sh
+      copy:
+        src: collect-tcp-avg-rtt.sh
+        dest: /opt/tcp-avg-rtt/collect-tcp-avg-rtt
+        owner: root
+        group: root
+        mode: '0755'
