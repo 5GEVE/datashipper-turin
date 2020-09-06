@@ -55,11 +55,11 @@ fi
 generate_yaml()
 {
   cat <<EOF
-  - type: log
-    fields:
-      topic_id: ${TOPIC}
-    paths:
-      - ${OUTPUT_DIR}/${TOPIC}.csv
+- type: log
+  fields:
+    topic_id: ${TOPIC}
+  paths:
+    - ${OUTPUT_DIR}/${TOPIC}.csv
 EOF
 }
 generate_yaml > "${OUTPUT_DIR}/${TOPIC}.yml"
