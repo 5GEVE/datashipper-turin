@@ -13,6 +13,7 @@ __base="$(basename "${__file}" .sh)"
 
 # defaults
 CONFIGS_DIR="/opt/datashipper/configs"
+OUTPUT_DIR="/opt/datashipper/output"
 
 # Help command output
 usage(){
@@ -20,15 +21,12 @@ echo "
 ${__base}.sh [OPTION...] TOPIC
 -h; Print this help and exit
 -c <configs_dir>; Configs directory (default: ${CONFIGS_DIR})
+-o <configs_dir>; Output directory (default: ${OUTPUT_DIR})
 TOPIC; The name of the topic to be added
 " | column -t -s ";"
 }
 
-function log() {
-  echo -e "$(date --iso-8601='seconds') - $*"
-}
-
-while getopts ":hc:" opt; do
+while getopts ":hc:o:" opt; do
   case ${opt} in
     h )
       usage
@@ -36,6 +34,9 @@ while getopts ":hc:" opt; do
       ;;
     c )
       CONFIGS_DIR=${OPTARG}
+      ;;
+    o )
+      OUTPUT_DIR=${OPTARG}
       ;;
     \? )
       usage
@@ -59,7 +60,7 @@ generate_yaml()
   fields:
     topic_id: ${TOPIC}
   paths:
-    - ${CONFIGS_DIR}/${TOPIC}.csv
+    - ${OUTPUT_DIR}/${TOPIC}.csv
 EOF
 }
 generate_yaml > "${CONFIGS_DIR}/${TOPIC}.yml"
