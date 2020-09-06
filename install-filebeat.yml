@@ -57,3 +57,10 @@
         state: restarted
         daemon_reload: yes
         name: filebeat
+    - name: Install add_input_config.sh
+      copy:
+        src: add_input_config.sh
+        dest: /opt/datashipper/add_input_config
+        owner: root
+        group: root
+        mode: '0755'
