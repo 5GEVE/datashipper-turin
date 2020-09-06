@@ -4,42 +4,38 @@
   become: yes
 
   tasks:
-    - name: Set python3 as default
-      alternatives:
-        name: python
-        path: /usr/bin/python3
     # Collectors scripts
     - name: Install packages
       apt:
         update_cache: yes
-        name: [ tshark, bc, gawk, procps, python3-yaml ]
-    - name: Ensure /opt/data-rate directory exists
+        name: [ tshark, bc, gawk, procps ]
+    - name: Ensure /opt/datashipper/output directory exists
       file:
-        path: /opt/data-rate/output
+        path: /opt/datashipper/output
         recurse: yes
         state: directory
         owner: root
         group: root
         mode: '0755'
-    - name: Copy collect-data-rate.sh
+    - name: Ensure /opt/datashipper/configs directory exists
+      file:
+        path: /opt/datashipper/configs
+        recurse: yes
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Install collect-data-rate.sh
       copy:
         src: collect-data-rate.sh
-        dest: /opt/data-rate/collect-data-rate
+        dest: /opt/datashipper/collect-data-rate
         owner: root
         group: root
         mode: '0755'
-    - name: Ensure /opt/tcp-avg-rtt directory exists
-      file:
-        path: /opt/tcp-avg-rtt/output
-        recurse: yes
-        state: directory
-        owner: root
-        group: root
-        mode: '0755'
-    - name: Copy collect-tcp-avg-rtt.sh
+    - name: Install collect-tcp-avg-rtt.sh
       copy:
         src: collect-tcp-avg-rtt.sh
-        dest: /opt/tcp-avg-rtt/collect-tcp-avg-rtt
+        dest: /opt/datashipper/collect-tcp-avg-rtt
         owner: root
         group: root
         mode: '0755'
@@ -56,8 +52,8 @@
         owner: root
         group: root
         mode: '0644'
-    - name: Stop filebeat service
+    - name: Restart filebeat service
       systemd:
-        state: stopped
+        state: restarted
         daemon_reload: yes
         name: filebeat
