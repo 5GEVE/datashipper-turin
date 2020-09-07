@@ -20,7 +20,7 @@ generate_post_data()
   "password": "${password}",
   "metricType": "LATENCY",
   "configurationScript": "EXECUTE_COMMAND /opt/datashipper/add_input_config \$\$topic_name; \
-EXECUTE_COMMAND nohup /opt/datashipper/collect-tcp-avg-rtt -m -t 5 -i ens4 \
+EXECUTE_COMMAND nohup /opt/datashipper/collect-tcp-avg-rtt -m -i ens4 \
 -d \$\$dataShipperId \
 -a \$\$vnf.419b1884-aea1-4cad-8647-c2cec55287b9.extcp.cp_tracker_ext_in.ipaddress \
 -o /opt/datashipper/output/\$\$topic_name.csv \
