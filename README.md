@@ -33,9 +33,13 @@ dataShipperId=ITALY_TURIN.BANDWIDTH.data-rate
 ipAddress=10.50.7.24
 username=root
 password=password
+captureInterface=ens4
 ```
 *Note:* The `SITE_ID` is the site you want to associate the data shipper to.
 You can get sites' IDs by issuing a GET request to the IWF Repository on `/sites` path.
+
+*Note:* `captureInterface` is the network interface to capture traffic from.
+It should received mirrored traffic from the site's user data plane.
 
 
 ## Collectors

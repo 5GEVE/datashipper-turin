@@ -8,6 +8,7 @@ dataShipperId=ITALY_TURIN.BANDWIDTH.data-rate
 ipAddress=10.50.7.24
 username=root
 password=password
+captureInterface=ens4
 
 # Do not change anything below this line
 generate_post_data()
@@ -20,7 +21,7 @@ generate_post_data()
   "password": "${password}",
   "metricType": "BANDWIDTH",
   "configurationScript": "EXECUTE_COMMAND /opt/datashipper/add_input_config \$\$topic_name; \
-EXECUTE_COMMAND nohup /opt/datashipper/collect-data-rate -b -i ens4 \
+EXECUTE_COMMAND nohup /opt/datashipper/collect-data-rate -b -i ${captureInterface} \
 -d ${dataShipperId} \
 -a \$\$vnf.419b1884-aea1-4cad-8647-c2cec55287b9.extcp.cp_tracker_ext_in.ipaddress \
 -o /opt/datashipper/output/\$\$topic_name.csv \
