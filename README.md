@@ -145,7 +145,10 @@ sudo apt install kafkacat
 kafkacat -b localhost:9092 -L
 
 # Read messages from topics
-kafkacat -b kafka-test.polito.it:9092 -C -t user_data_rate
+kafkacat -q -b kafka-test.polito.it:9092 -C -t user_data_rate
+
+# Pipe to jq for better output
+kafkacat -q -b kafka-test.polito.it:9092 -C -t user_data_rate | jq
 ```
 
 ### As a Systemd service
