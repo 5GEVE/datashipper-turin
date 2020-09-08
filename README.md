@@ -14,6 +14,7 @@ output.kafka:
 
 Install everything on the remote machine used to host the data shipper using the provided Ansible playbook.
 It installs the scripts in `/opt/datashipper` and the Filebeat as a systemd unit service.
+You need to configure key-based SSH access to the remote host for this to work.
 ```shell script
 ansible-playbook -i "<host-ip-address>," install-filebeat.yml
 ```
