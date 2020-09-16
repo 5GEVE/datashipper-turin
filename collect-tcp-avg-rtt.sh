@@ -19,7 +19,7 @@ ${__base}.sh [OPTION...]
 -d; Set device id (default: hostname -f)
 -m; Set rtt measurement in milliseconds (default: seconds)
 -i <name>; Set interface name (default: gateway interface from 'ip route')
--a <address>; Set host address to capture. Use multiple -a to capture multiple addresses. (default: all)
+-a <address-array>; Set host addresses to capture, ex. \"10.1.1.3,10.1.1.4\". (default: all)
 -p <port>; Set port to capture, only TCP (default: all)
 -t <seconds>; Set sampling time in seconds (default: 1)
 -o <filename>; Set output file name (default: tcp-avg-rtt.csv)
@@ -58,7 +58,10 @@ while getopts ":hd:mi:a:p:t:o:v" opt; do
       INTERFACE=${OPTARG}
       ;;
     a )
-      ADDRESS+=("${OPTARG}")
+      # with json format
+      # mapfile -t ADDRESS < <(jq -r '.[]' <<< "${OPTARG}")
+      # with comma separated string "10.1.1.1,10.2.2.2" (this is better)
+      IFS=',' read -ra ADDRESS <<< "${OPTARG}"
       ;;
     p )
       PORT=${OPTARG}
