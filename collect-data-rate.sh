@@ -60,9 +60,6 @@ while getopts ":hd:bi:a:p:ut:o:v" opt; do
       INTERFACE=${OPTARG}
       ;;
     a )
-      # with json format
-      # mapfile -t ADDRESS < <(jq -r '.[]' <<< "${OPTARG}")
-      # with comma separated string "10.1.1.1,10.2.2.2" (this is better)
       IFS=',' read -ra ADDRESS <<< "${OPTARG}"
       ;;
     p )
