@@ -19,7 +19,7 @@ ${__base}.sh [OPTION...]
 -d; Set device id (default: hostname -f)
 -m; Set rtt measurement in milliseconds (default: seconds)
 -i <name>; Set interface name (default: gateway interface from 'ip route')
--a <address-array>; Set host addresses to capture, ex. \"10.1.1.3,10.1.1.4\". (default: all)
+-a <address-array>; Set host addresses to capture, ex. 10.1.1.3,10.1.1.4 (default: all)
 -p <port>; Set port to capture, only TCP (default: all)
 -t <seconds>; Set sampling time in seconds (default: 1)
 -o <filename>; Set output file name (default: tcp-avg-rtt.csv)

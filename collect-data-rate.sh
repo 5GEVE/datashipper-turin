@@ -19,7 +19,7 @@ ${__base}.sh [OPTION...]
 -d; Set device id (default: hostname -f)
 -b; Set rate measurement in bits per second (default: Bytes)
 -i <name>; Set interface name (default: gateway interface from 'ip route')
--a <address-array>; Set host addresses to capture, ex. 10.1.1.3,10.1.1.4. (default: all)
+-a <address-array>; Set host addresses to capture, ex. 10.1.1.3,10.1.1.4 (default: all)
 -p <port>; Set port to capture (default: all)
 -u; Set UDP capture for port selected with '-p' (default: tcp)
 -t <seconds>; Set sampling time in seconds (default: 1)
