@@ -20,6 +20,7 @@ ${__base}.sh [OPTION...]
 -b; Set rate measurement in bits per second (default: Bytes)
 -i <name>; Set interface name (default: gateway interface from 'ip route')
 -a <address-array>; Set host addresses to capture, ex. 10.1.1.3,10.1.1.4 (default: all)
+-r; Reverse the capture direction: addresses defined with '-a' are considered destination (default: source)
 -p <port>; Set port to capture (default: all)
 -u; Set UDP capture for port selected with '-p' (default: tcp)
 -t <seconds>; Set sampling time in seconds (default: 1)
@@ -39,11 +40,12 @@ DEVICE_ID=$(hostname -f)
 UNIT=Bps
 MULTIPLIER=1
 INTERFACE=$(ip route | awk '$1 == "default" {print $5; exit}')
+DIRECTION=src
 PROTO=tcp
 DUR=1
 VERBOSE=0
 OUT="data-rate.csv"
-while getopts ":hd:bi:a:p:ut:o:v" opt; do
+while getopts ":hd:bi:a:rp:ut:o:v" opt; do
   case ${opt} in
     h )
       usage
@@ -61,6 +63,9 @@ while getopts ":hd:bi:a:p:ut:o:v" opt; do
       ;;
     a )
       IFS=',' read -ra ADDRESS <<< "${OPTARG}"
+      ;;
+    r )
+      DIRECTION=dst
       ;;
     p )
       PORT=${OPTARG}
@@ -90,6 +95,7 @@ log "unit: $UNIT"
 log "multiplier: $MULTIPLIER"
 log "interface: $INTERFACE"
 [ -v ADDRESS ] && log "address(es): ${ADDRESS[*]}"
+log "direction: $DIRECTION"
 [ -v PORT ] && log "port: $PORT"
 log "protocol: $PROTO"
 log "duration: $DUR second(s)"
@@ -99,10 +105,10 @@ log "verbose: $VERBOSE"
 # Prepare arguments for Tshark
 ARGS=(--interface "${INTERFACE}" --autostop "duration:${DUR}" -q -z "io,stat,0,BYTES")
 if [ -v ADDRESS ]; then
-  ARGS+=(host "${ADDRESS}")
+  ARGS+=("${DIRECTION}" host "${ADDRESS}")
   for a in "${ADDRESS[@]:1}"
   do
-    ARGS+=(or host "${a}")
+    ARGS+=(or "${DIRECTION}" host "${a}")
   done
 fi
 if [ -v PORT ]; then

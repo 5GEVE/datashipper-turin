@@ -4,7 +4,7 @@ IWFREPO_HOST=localhost
 IWFREPO_PORT=8087
 SITE_ID=1
 
-dataShipperId=ITALY_TURIN.BANDWIDTH.data-rate
+dataShipperId=ITALY_TURIN.USER_DATA_RATE_UPLINK.ul_data_rate
 ipAddress=10.50.7.24
 username=root
 password=password
@@ -19,9 +19,10 @@ generate_post_data()
   "ipAddress": "${ipAddress}",
   "username": "${username}",
   "password": "${password}",
-  "metricType": "BANDWIDTH",
+  "metricType": "USER_DATA_RATE_UPLINK",
   "configurationScript": "EXECUTE_COMMAND /opt/datashipper/add_input_config \$\$topic_name; \
 EXECUTE_COMMAND nohup /opt/datashipper/collect-data-rate -b -i ${captureInterface} \
+-r \
 -d ${dataShipperId} \
 -o /opt/datashipper/output/\$\$topic_name.csv \
 >/dev/null 2>&1 < /dev/null &;",
