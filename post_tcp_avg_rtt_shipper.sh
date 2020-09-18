@@ -4,7 +4,7 @@ IWFREPO_HOST=localhost
 IWFREPO_PORT=8087
 SITE_ID=1
 
-dataShipperId=ITALY_TURIN.LATENCY.tcp-avg-rtt
+dataShipperId=ITALY_TURIN.LATENCY_USERPLANE.tcp_avg_rtt
 ipAddress=10.50.7.24
 username=root
 password=password
@@ -19,7 +19,7 @@ generate_post_data()
   "ipAddress": "${ipAddress}",
   "username": "${username}",
   "password": "${password}",
-  "metricType": "LATENCY",
+  "metricType": "LATENCY_USERPLANE",
   "configurationScript": "EXECUTE_COMMAND /opt/datashipper/add_input_config \$\$topic_name; \
 EXECUTE_COMMAND nohup /opt/datashipper/collect-tcp-avg-rtt -m -i ${captureInterface} \
 -d ${dataShipperId} \
