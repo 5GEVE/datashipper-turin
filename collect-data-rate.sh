@@ -11,30 +11,6 @@ __file="${__dir}/$(basename "${BASH_SOURCE[0]}")"
 __base="$(basename "${__file}" .sh)"
 #__root="$(cd "$(dirname "${__dir}")" && pwd)" # <-- change this as it depends on your app
 
-# Help command output
-usage(){
-echo "
-${__base}.sh [OPTION...]
--h; Print this help and exit
--d; Set device id (default: hostname -f)
--b; Set rate measurement in bits per second (default: Bytes)
--i <name>; Set interface name (default: gateway interface from 'ip route')
--a <address-array>; Set host addresses to capture, ex. 10.1.1.3,10.1.1.4 (default: all)
--r; Reverse the capture direction: addresses defined with '-a' are considered destination (default: source)
--p <port>; Set port to capture (default: all)
--u; Set UDP capture for port selected with '-p' (default: tcp)
--t <seconds>; Set sampling time in seconds (default: 1)
--o <filename>; Set output file name (default: data-rate.csv)
--v; Set verbose output
-" | column -t -s ";"
-}
-
-function log() {
-  if [ "${VERBOSE}" = 1 ]; then
-    echo -e "$(date --iso-8601='seconds') - $*"
-  fi
-}
-
 # defaults
 DEVICE_ID=$(hostname -f)
 UNIT=Bps
@@ -45,6 +21,31 @@ PROTO=tcp
 DUR=1
 VERBOSE=0
 OUT="data-rate.csv"
+
+# Help command output
+usage(){
+echo "
+${__base}.sh [OPTION...]
+-h; Print this help and exit
+-d; Set device id (default: ${DEVICE_ID})
+-b; Set rate measurement in bits per second (default: ${UNIT})
+-i <name>; Set interface name (default: ${INTERFACE})
+-a <address-array>; Set host addresses to capture, ex. 10.1.1.3,10.1.1.4 (default: all)
+-r; Reverse: addresses defined with '-a' are considered destination (default: ${DIRECTION})
+-p <port>; Set port to capture (default: all)
+-u; Set UDP capture for port selected with '-p' (default: ${PROTO})
+-t <seconds>; Set sampling time in seconds (default: ${DUR})
+-o <filename>; Set output file name (default: ${OUT})
+-v; Set verbose output
+" | column -t -s ";"
+}
+
+function log() {
+  if [ "${VERBOSE}" = 1 ]; then
+    echo -e "$(date --iso-8601='seconds') - $*"
+  fi
+}
+
 while getopts ":hd:bi:a:rp:ut:o:v" opt; do
   case ${opt} in
     h )
