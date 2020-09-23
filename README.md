@@ -23,9 +23,9 @@ ansible-playbook -i "<host-ip-address>," -u <user> -K install-datashipper.yml
 
 > *Note:*
 >
-> - do not forget to include the comma after `<host-ip-address>`.
-> - default user is `ubuntu`, ovveride it with `-u`.
-> - request for `sudo` password is prompted by `-K`.
+> - do not forget to include the comma after `<host-ip-address>`
+> - default user is `ubuntu`, ovveride it with `-u`
+> - request for `sudo` password is prompted by `-K`
 
 The Runtime Configurator triggers the collection and publishing of metrics from the data shippers.
 Information about the data shippers must be included in the IWF Repository.
@@ -43,12 +43,10 @@ password=password
 captureInterface=ens4
 ```
 
-*Note:* The `SITE_ID` is the site you want to associate the data shipper to.
-You can get sites' IDs by issuing a GET request to the IWF Repository on `/sites` path.
-
-*Note:* `captureInterface` is the network interface to capture traffic from.
-It should received mirrored traffic from the site's user data plane.
-
+> *Note:*
+>
+> - The `SITE_ID` is the site you want to associate the data shipper to. You can get sites' IDs by issuing a GET request to the IWF Repository on `/sites` path.
+> - The `captureInterface` is the network interface to capture traffic from. It should received mirrored traffic from the site's user data plane.
 
 ## Collectors
 
@@ -59,6 +57,7 @@ Traffic can be filtered by host and port.
 Run `./collect-data-rate.sh -h` for available options.
 
 *Requirements:*
+
 - Install Tshark: `sudo apt install tshark`
 - Add your user to `wireshark` group: `gpasswd -a $USER wireshark`
 - Install Basic Calculator and GNU Awk: `sudo apt install bc gawk`
@@ -99,6 +98,7 @@ Thus, the script can produce a limited number of samples, not consistent with th
 Field `tcp.analysis.ack_rtt` could also be used but it doesn't work on mirrored traffic captures: only TCP connections to or from the capturing host work with this field.
 
 *Requirements:*
+
 - Install Tshark: `sudo apt install tshark`
 - Add your user to `wireshark` group: `gpasswd -a $USER wireshark`
 - Install Basic Calculator and GNU Awk: `sudo apt install bc gawk`
@@ -134,7 +134,7 @@ export DOCKER_HOST_IP=<host-ip-address>
 docker-compose up -d
 ```
 
-*Note:* Set `DOCKER_HOST_IP` if you want to reach Kafka from outside your machine.
+> *Note:* Set `DOCKER_HOST_IP` if you want to reach Kafka from outside your machine.
 
 Now you have a Kafka broker and a zookeeper instance on your local machine.
 Set host and port in your `filebeat.yml` like this:
