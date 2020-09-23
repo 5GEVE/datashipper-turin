@@ -16,7 +16,7 @@ Install everything on the remote machine used to host the data shipper using the
 It installs the scripts in `/opt/datashipper` and the Filebeat as a systemd unit service.
 You need to configure key-based SSH access to the remote host for this to work.
 ```shell script
-ansible-playbook -i "<host-ip-address>," install-filebeat.yml
+ansible-playbook -i "<host-ip-address>," install-datashipper.yml
 ```
 *Note:* do not forget to include the comma after `<host-ip-address>`.
 
@@ -85,7 +85,7 @@ Run `./collect-tcp-avg-rtt.sh -h` for available options.
 
 The script relies on `tcp.analysis.initial_rtt` field computed by Tshark.
 To collect samples, the script needs to capture the TCP handshake at the beginning of new sessions (if TCP sessions are very long new values can be not available for a long time).
-Thus, the script can produce a limited number of samples, not consistent with the `-t` parameter. 
+Thus, the script can produce a limited number of samples, not consistent with the `-t` parameter.
 Field `tcp.analysis.ack_rtt` could also be used but it doesn't work on mirrored traffic captures: only TCP connections to or from the capturing host work with this field.
 
 *Requirements:*
@@ -173,4 +173,3 @@ Start and optionally enable (start on boot) the service:
 sudo systemctl start filebeat.service
 sudo systemctl enable filebeat.service
 ```
-
