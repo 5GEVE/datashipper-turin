@@ -29,7 +29,9 @@ ansible-playbook -i "<host-ip-address>," -u <user> -K install-datashipper.yml
 
 The Runtime Configurator triggers the collection and publishing of metrics from the data shippers.
 Information about the data shippers must be included in the IWF Repository.
-Edit [post_data_rate_shipper.sh](post_data_rate_shipper.sh) and [post_tcp_avg_rtt_shipper.sh](post_tcp_avg_rtt_shipper.sh) and change the information at the beginning of the script.
+Edit [post_ul_data_rate_shipper.sh](post_ul_data_rate_shipper.sh),
+[post_dl_data_rate_shipper.sh](post_dl_data_rate_shipper.sh), and
+[post_tcp_avg_rtt_shipper.sh](post_tcp_avg_rtt_shipper.sh) and change the information at the beginning of the files.
 
 ```shell script
 IWFREPO_HOST=localhost
