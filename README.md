@@ -15,11 +15,13 @@ output.kafka:
 Install everything on the remote machine used to host the data shipper using the provided Ansible playbook.
 It installs the scripts in `/opt/datashipper` and the Filebeat as a systemd unit service.
 You need to configure key-based SSH access to the remote host for this to work.
-```shell script
-ansible-playbook -i "<host-ip-address>," install-datashipper.yml
-```
-*Note:* do not forget to include the comma after `<host-ip-address>`.
 
+```shell script
+ansible-playbook -i "<host-ip-address>," --become-user <user> --ask-become-pass install-datashipper.yml
+```
+
+> *Note:* do not forget to include the comma after `<host-ip-address>`.
+> *Note:* `--ask-become-pass` will ask you the `sudo` password if needed.
 
 The Runtime Configurator triggers the collection and publishing of metrics from the data shippers.
 Information about the data shippers must be included in the IWF Repository.
