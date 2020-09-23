@@ -17,11 +17,14 @@ It installs the scripts in `/opt/datashipper` and the Filebeat as a systemd unit
 You need to configure key-based SSH access to the remote host for this to work.
 
 ```shell script
-ansible-playbook -i "<host-ip-address>," --become-user <user> --ask-become-pass install-datashipper.yml
+ansible-playbook -i "<host-ip-address>," -u <user> -K install-datashipper.yml
 ```
 
-> *Note:* do not forget to include the comma after `<host-ip-address>`.
-> *Note:* `--ask-become-pass` will ask you the `sudo` password if needed.
+> *Note:*
+>
+> - do not forget to include the comma after `<host-ip-address>`.
+> - default user is `ubuntu`, ovveride it with `-u`.
+> - request for `sudo` password is prompted by `-K`.
 
 The Runtime Configurator triggers the collection and publishing of metrics from the data shippers.
 Information about the data shippers must be included in the IWF Repository.
