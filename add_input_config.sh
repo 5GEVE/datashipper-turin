@@ -57,6 +57,7 @@ generate_yaml()
 {
   cat <<EOF
 - type: log
+  tail_files: true
   fields:
     topic_id: ${TOPIC}
   paths:
