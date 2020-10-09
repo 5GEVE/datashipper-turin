@@ -27,7 +27,7 @@ processors:
   - decode_csv_fields:
       fields:
         message: decoded_csv_arr
-      separator: ","
+      separator: ";"
       ignore_missing: false
       overwrite_keys: true
       trim_leading_space: false
