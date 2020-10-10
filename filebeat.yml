@@ -48,6 +48,7 @@ processors:
             }, {})
             json_from_csv["metric_value"] = parseFloat(json_from_csv["metric_value"])
             json_from_csv["timestamp"] = parseFloat(json_from_csv["timestamp"])
+            json_from_csv["context"] = {}
             var value = {
               value: json_from_csv
             };
