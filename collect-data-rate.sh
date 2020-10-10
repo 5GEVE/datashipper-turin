@@ -125,7 +125,7 @@ log "csv headers: metric_value,timestamp,unit,device_id,context"
 while true
 do
   value=$(tshark "${ARGS[@]}" 2>/dev/null | awk '/\|\s+BYTES\s+\|/ {getline;getline;print $6}')
-  timestamp=$(echo "scale=2; $(date +%s%N)/1000000" | bc)
+  timestamp=$(date +%s)
   log "value measured in $DUR second(s): $value"
   if [ "${value}" ]; then
     rate=$(echo "$value*$MULTIPLIER/$DUR" | bc | awk '{printf "%.3f", $0}')
