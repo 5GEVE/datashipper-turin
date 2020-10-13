@@ -13,6 +13,7 @@
 #      topic_id: tcp-avg-rtt
 #    paths:
 #      - output/tcp-avg-rtt.csv
+logging.level: warning
 
 filebeat.config.inputs:
   enabled: true
