@@ -19,10 +19,10 @@ OUTPUT_DIR="/opt/datashipper/output"
 usage(){
 echo "
 ${__base}.sh [OPTION...] TOPIC
+TOPIC; The name of the topic to be added
 -h; Print this help and exit
 -c <configs_dir>; Configs directory (default: ${CONFIGS_DIR})
 -o <configs_dir>; Output directory (default: ${OUTPUT_DIR})
-TOPIC; The name of the topic to be added
 " | column -t -s ";"
 }
 
