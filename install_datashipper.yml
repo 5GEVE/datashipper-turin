@@ -25,10 +25,10 @@
         owner: root
         group: root
         mode: '0755'
-    - name: Install collect-data-rate.sh
+    - name: Install collect_data_rate.sh
       copy:
-        src: collect-data-rate.sh
-        dest: /opt/datashipper/collect-data-rate
+        src: collect_data_rate.sh
+        dest: /opt/datashipper/collect_data_rate
         owner: root
         group: root
         mode: '0755'

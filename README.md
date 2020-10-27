@@ -52,11 +52,11 @@ captureInterface=ens4
 
 ## Collectors
 
-### [collect-data-rate.sh](collect-data-rate.sh)
+### [collect_data_rate.sh](collect_data_rate.sh)
 
 Script to collect data rate for a use-case.
 Traffic can be filtered by host and port.
-Run `./collect-data-rate.sh -h` for available options.
+Run `./collect_data_rate.sh -h` for available options.
 
 *Requirements:*
 
@@ -85,7 +85,7 @@ The above will send traffic to the previously created endpoint.
 Run the script to collect traffic and compute data rate:
 
 ```shell script
-./collect-data-rate.sh -i lo -p 12345 -a 127.0.0.1 -t 3 -o output/data-rate.csv -v
+./collect_data_rate.sh -i lo -p 12345 -a 127.0.0.1 -t 3 -o output/data-rate.csv -v
 ```
 
 ### [collect-tcp-avg-rtt.sh](collect-tcp-avg-rtt.sh)

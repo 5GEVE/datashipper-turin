@@ -21,7 +21,7 @@ generate_post_data()
   "password": "${password}",
   "metricType": "USER_DATA_RATE_UPLINK",
   "configurationScript": "EXECUTE_COMMAND /opt/datashipper/add_input_config \$\$topic_name; \
-EXECUTE_COMMAND nohup /opt/datashipper/collect-data-rate -b -i ${captureInterface} \
+EXECUTE_COMMAND nohup /opt/datashipper/collect_data_rate -b -i ${captureInterface} \
 -r \
 -d ${dataShipperId} \
 -o /opt/datashipper/output/\$\$topic_name.csv \
