@@ -1,8 +1,18 @@
 # datashipper-turin
 
-A collection of tools to collect and publish infrastructure metrics on the 5G EVE platform.
+A collection of tools to collect and publish metrics on the 5G EVE platform.
+
+Features:
+
+- Install, configure and manage [Filebeat](https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-installation.html)
+- Scripts to collect infrastructure metrics (in [infrastructure](infrastructure))
+- Scripts to collect common application metrics (in [application](application))
 
 ## Install
+
+### Filebeat
+
+Filebeat is needed to push any kind of metrics to Kafka and it must be installed first.
 
 Clone the repository on your local machine and edit [filebeat.yml](filebeat.yml). Set Kafka's host and port.
 
@@ -13,12 +23,12 @@ output.kafka:
   topic: "%{[fields][topic_id]}"
 ```
 
-Install everything on the remote machine used to host the data shipper using the provided Ansible playbook.
-It installs the scripts in `/opt/datashipper` and the Filebeat as a systemd unit service.
-You need to configure key-based SSH access to the remote host for this to work.
+Install Filebeat as a systemd unit service with the provided Ansible playbook.
+
+> Note: You need to configure key-based SSH access to the remote host for this to work.
 
 ```shell script
-ansible-playbook -i "<host-ip-address>," -u <user> -K install-datashipper.yml
+ansible-playbook -i "<host-ip-address>," -u <user> -K install_filebeat.yml
 ```
 
 > *Note:*
@@ -27,85 +37,15 @@ ansible-playbook -i "<host-ip-address>," -u <user> -K install-datashipper.yml
 > - default user is `ubuntu`, ovveride it with `-u`
 > - request for `sudo` password is prompted by `-K`
 
-The Runtime Configurator triggers the collection and publishing of metrics from the data shippers.
-Information about the data shippers must be included in the IWF Repository.
-Edit [post_ul_data_rate_shipper.sh](post_ul_data_rate_shipper.sh),
-[post_dl_data_rate_shipper.sh](post_dl_data_rate_shipper.sh), and
-[post_tcp_avg_rtt_shipper.sh](post_tcp_avg_rtt_shipper.sh) and change the information at the beginning of the files.
+### Infrastructure metrics collectors
 
-```shell script
-IWFREPO_HOST=localhost
-IWFREPO_PORT=8087
-SITE_ID=1
+See [infrastructure/README.md](infrastructure/README.md)
 
-dataShipperId=ITALY_TURIN.BANDWIDTH.data-rate
-ipAddress=10.50.7.24
-username=root
-password=password
-captureInterface=ens4
-```
+### Application metrics collectors
 
-> *Note:*
->
-> - The `SITE_ID` is the site you want to associate the data shipper to. You can get sites' IDs by issuing a GET request to the IWF Repository on `/sites` path.
-> - The `captureInterface` is the network interface to capture traffic from. It should received mirrored traffic from the site's user data plane.
+See [application/README.md](application/README.md)
 
-## Collectors
-
-### [collect_data_rate.sh](collect_data_rate.sh)
-
-Script to collect data rate for a use-case.
-Traffic can be filtered by host and port.
-Run `./collect_data_rate.sh -h` for available options.
-
-*Requirements:*
-
-- Install Tshark: `sudo apt install tshark`
-- Add your user to `wireshark` group: `gpasswd -a $USER wireshark`
-- Install Basic Calculator and GNU Awk: `sudo apt install bc gawk`
-
-To test the script, let's generate some traffic.
-Open a terminal and run:
-
-```shell script
-nc -vvlnp 12345 >/dev/null
-```
-
-The above will listen for incoming traffic.
-`12345` is the port number.
-
-Open another terminal and run:
-
-```shell script
-dd if=/dev/zero bs=1M | nc -vvn 127.0.0.1 12345
-```
-
-The above will send traffic to the previously created endpoint.
-
-Run the script to collect traffic and compute data rate:
-
-```shell script
-./collect_data_rate.sh -i lo -p 12345 -a 127.0.0.1 -t 3 -o output/data-rate.csv -v
-```
-
-### [collect_tcp_avg_rtt.sh](collect_tcp_avg-rtt.sh)
-
-Script to collect the average initial rtt (irtt) of TCP connections for a use-case.
-Traffic can be filtered by host and port.
-Run `./collect_tcp_avg_rtt.sh -h` for available options.
-
-The script relies on `tcp.analysis.initial_rtt` field computed by Tshark.
-To collect samples, the script needs to capture the TCP handshake at the beginning of new sessions (if TCP sessions are very long new values can be not available for a long time).
-Thus, the script can produce a limited number of samples, not consistent with the `-t` parameter.
-Field `tcp.analysis.ack_rtt` could also be used but it doesn't work on mirrored traffic captures: only TCP connections to or from the capturing host work with this field.
-
-*Requirements:*
-
-- Install Tshark: `sudo apt install tshark`
-- Add your user to `wireshark` group: `gpasswd -a $USER wireshark`
-- Install Basic Calculator and GNU Awk: `sudo apt install bc gawk`
-
-## Filebeat
+## More information on Filebeat
 
 [Filebeat](https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-installation.html) monitors CSV files and pushes data to Kafka.
 [filebeat.yml](filebeat.yml) is the main configuration file.
@@ -146,13 +86,13 @@ output.kafka:
   hosts: ["localhost:9092"]
 ```
 
-Run filebeat like shown above. In the log you should see something like:
+Run filebeat as shown above. In the log you should see something like:
 
 ```
 2020-08-18T15:23:56.040+0200    INFO    [publisher_pipeline_output]     pipeline/output.go:111      Connection to kafka(localhost:9092) established
 ```
 
-Then, run the [collectors](#collectors) as shown above.
+Then, run one of the collectors and make it write data to the path you configured in `filebeat.yml`.
 The filebeat will monitor the output file, read any new line and send it to Kafka in JSON format.
 
 To read Kafka messages you need to install a Kafka client.
