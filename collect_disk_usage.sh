@@ -70,10 +70,7 @@ log "verbose: $VERBOSE"
 log "csv headers: metric_value,timestamp,unit,device_id,context"
 while true
 do
-  value=$(df --block-size=1G --local --output=used,target | awk '/\s\/$/{print $1}')
-  timestamp=$(date +%s)
-  log "value measured in $DUR second(s): $value"
-  csvline="${value},${timestamp},GB,${DEVICE_ID},"
+  csvline="$(df --block-size=1G --local --output=used,target | awk '/\s\/$/{print $1}'),$(date +%s),GB,${DEVICE_ID},"
   log "csvline: $csvline"
   echo "$csvline" >> "${OUT}"
   sleep "${DUR}"

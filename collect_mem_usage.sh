@@ -70,10 +70,7 @@ log "verbose: $VERBOSE"
 log "csv headers: metric_value,timestamp,unit,device_id,context"
 while true
 do
-  value=$(free --mega | awk '/Mem/{print $3}')
-  timestamp=$(date +%s)
-  log "value measured in $DUR second(s): $value"
-  csvline="${value},${timestamp},MB,${DEVICE_ID},"
+  csvline="$(free --mega | awk '/Mem/{print $3}'),$(date +%s),MB,${DEVICE_ID},"
   log "csvline: $csvline"
   echo "$csvline" >> "${OUT}"
   sleep "${DUR}"

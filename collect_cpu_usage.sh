@@ -70,10 +70,7 @@ log "verbose: $VERBOSE"
 log "csv headers: metric_value,timestamp,unit,device_id,context"
 while true
 do
-  value=$(mpstat "${DUR}" 1 | awk 'NR==4{ print 100 - $NF; }')
-  timestamp=$(date +%s)
-  log "value measured in $DUR second(s): $value"
-  csvline="${value},${timestamp},%,${DEVICE_ID},"
+  csvline="$(mpstat "${DUR}" 1 | awk 'NR==4{ print 100 - $NF; }'),$(date +%s),%,${DEVICE_ID},"
   log "csvline: $csvline"
   echo "$csvline" >> "${OUT}"
 done
