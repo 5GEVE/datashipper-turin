@@ -24,11 +24,11 @@ generate_post_data()
 EXECUTE_COMMAND nohup /opt/datashipper/collect_data_rate -b -i ${captureInterface} \
 -r \
 -d ${dataShipperId} \
--o /opt/datashipper/output/\$\$topic_name.csv \
+-o /opt/datashipper/output/\$\$topic_name \
 >/dev/null 2>&1 < /dev/null &;",
   "stopConfigScript": "EXECUTE_COMMAND pkill --full --oldest \$\$topic_name; \
 EXECUTE_COMMAND rm /opt/datashipper/configs/\$\$topic_name.yml; \
-EXECUTE_COMMAND sleep 2 && rm /opt/datashipper/output/\$\$topic_name.csv;"
+EXECUTE_COMMAND sleep 2 && rm /opt/datashipper/output/\$\$topic_name;"
 }
 EOF
 }

@@ -4,7 +4,6 @@ testCaseBlueprint:
   name: TCB Template Application Metrics
   description: TestCase Blueprint template to collect application metrics
   # In configurationScript we setup the filebeat and run the metric collection
-  # TODO check if it works without file extension csv
   # TODO check running stuff without sudo (change permissions in playbook)
   configurationScript:
     EXECUTE_COMMAND 10.0.0.5 $$user:$$password /opt/datashipper/add_input_config $$metric.topic.cpu_consumption;
