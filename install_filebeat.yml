@@ -11,7 +11,7 @@
         state: directory
         owner: root
         group: root
-        mode: '0755'
+        mode: '1777'
     - name: Ensure /opt/datashipper/configs directory exists
       file:
         path: /opt/datashipper/configs
@@ -19,7 +19,7 @@
         state: directory
         owner: root
         group: root
-        mode: '0755'
+        mode: '1777'
     - name: Install filebeat package
       apt:
         deb: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.8.1-amd64.deb
