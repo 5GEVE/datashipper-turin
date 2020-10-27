@@ -8,7 +8,7 @@
     - name: Install packages
       apt:
         update_cache: yes
-        name: [ tshark, bc, gawk, coreutils, procps, jq ]
+        name: [ tshark, bc, gawk, coreutils, procps, jq, sysstat ]
     - name: Ensure /opt/datashipper/output directory exists
       file:
         path: /opt/datashipper/output
