@@ -18,11 +18,13 @@ OUTPUT_DIR="/opt/datashipper/output"
 # Help command output
 usage(){
 echo "
+Adds an input configuration for Filebeat
+The file to be monitored gets the name of the TOPIC (without any extension)
 ${__base}.sh [OPTION...] TOPIC
-TOPIC; The name of the topic to be added
+TOPIC; The name of the topic
 -h; Print this help and exit
 -c <configs_dir>; Configs directory (default: ${CONFIGS_DIR})
--o <configs_dir>; Output directory (default: ${OUTPUT_DIR})
+-o <output_dir>; Output directory (default: ${OUTPUT_DIR})
 " | column -t -s ";"
 }
 
@@ -60,7 +62,7 @@ generate_yaml()
   fields:
     topic_id: ${TOPIC}
   paths:
-    - ${OUTPUT_DIR}/${TOPIC}.csv
+    - ${OUTPUT_DIR}/${TOPIC}
 EOF
 }
 generate_yaml > "${CONFIGS_DIR}/${TOPIC}.yml"
