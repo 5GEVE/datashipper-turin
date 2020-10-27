@@ -57,7 +57,7 @@ Run `./collect_data_rate.sh -h` for available options.
 - Add your user to `wireshark` group: `gpasswd -a $USER wireshark`
 - Install Basic Calculator and GNU Awk: `sudo apt install bc gawk`
 
-### [collect_tcp_avg_rtt.sh](collect_tcp_avg-rtt.sh)
+### [collect_tcp_avg_rtt.sh](collect_tcp_avg_rtt.sh)
 
 Script to collect the average ACK RTT of TCP connections.
 Traffic can be filtered by host and port.
