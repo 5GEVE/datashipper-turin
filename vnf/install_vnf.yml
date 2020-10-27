@@ -1,0 +1,39 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  become: yes
+
+  tasks:
+    - name: Install packages
+      apt:
+        update_cache: yes
+        name: [ sysstat, bc, gawk, coreutils, procps, jq ]
+    - name: Ensure /opt/datashipper directory exists
+      file:
+        path: /opt/datashipper
+        recurse: yes
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Install collect_cpu_usage.sh
+      copy:
+        src: collect_cpu_usage.sh
+        dest: /opt/datashipper/collect_cpu_usage
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Install collect_mem_usage.sh
+      copy:
+        src: collect_mem_usage.sh
+        dest: /opt/datashipper/collect_mem_usage
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Install collect_disk_usage.sh
+      copy:
+        src: collect_disk_usage.sh
+        dest: /opt/datashipper/collect_disk_usage
+        owner: root
+        group: root
+        mode: '0755'

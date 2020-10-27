@@ -1,0 +1,32 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  become: yes
+
+  tasks:
+    - name: Install packages
+      apt:
+        update_cache: yes
+        name: [ tshark, bc, gawk, coreutils, procps, jq ]
+    - name: Ensure /opt/datashipper directory exists
+      file:
+        path: /opt/datashipper
+        recurse: yes
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Install collect_data_rate.sh
+      copy:
+        src: collect_data_rate.sh
+        dest: /opt/datashipper/collect_data_rate
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Install collect_tcp_avg_rtt.sh
+      copy:
+        src: collect_tcp_avg_rtt.sh
+        dest: /opt/datashipper/collect_tcp_avg_rtt
+        owner: root
+        group: root
+        mode: '0755'
