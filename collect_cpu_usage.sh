@@ -20,6 +20,7 @@ OUT="cpu.csv"
 # Help command output
 usage(){
 echo "
+Collects the overall CPU usage in percentage (%)
 ${__base}.sh [OPTION...]
 -h; Print this help and exit
 -d; Set device id (default: ${DEVICE_ID})

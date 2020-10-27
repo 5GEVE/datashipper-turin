@@ -20,6 +20,7 @@ OUT="disk.csv"
 # Help command output
 usage(){
 echo "
+Collects the disk usage for root partition in GB.
 ${__base}.sh [OPTION...]
 -h; Print this help and exit
 -d; Set device id (default: ${DEVICE_ID})

@@ -20,6 +20,7 @@ OUT="mem.csv"
 # Help command output
 usage(){
 echo "
+Collects the memory usage in MB.
 ${__base}.sh [OPTION...]
 -h; Print this help and exit
 -d; Set device id (default: ${DEVICE_ID})
