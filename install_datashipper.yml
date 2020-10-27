@@ -32,10 +32,10 @@
         owner: root
         group: root
         mode: '0755'
-    - name: Install collect-tcp-avg-rtt.sh
+    - name: Install collect_tcp_avg_rtt.sh
       copy:
-        src: collect-tcp-avg-rtt.sh
-        dest: /opt/datashipper/collect-tcp-avg-rtt
+        src: collect_tcp_avg_rtt.sh
+        dest: /opt/datashipper/collect_tcp_avg_rtt
         owner: root
         group: root
         mode: '0755'

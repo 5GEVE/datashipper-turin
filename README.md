@@ -88,11 +88,11 @@ Run the script to collect traffic and compute data rate:
 ./collect_data_rate.sh -i lo -p 12345 -a 127.0.0.1 -t 3 -o output/data-rate.csv -v
 ```
 
-### [collect-tcp-avg-rtt.sh](collect-tcp-avg-rtt.sh)
+### [collect_tcp_avg_rtt.sh](collect_tcp_avg-rtt.sh)
 
 Script to collect the average initial rtt (irtt) of TCP connections for a use-case.
 Traffic can be filtered by host and port.
-Run `./collect-tcp-avg-rtt.sh -h` for available options.
+Run `./collect_tcp_avg_rtt.sh -h` for available options.
 
 The script relies on `tcp.analysis.initial_rtt` field computed by Tshark.
 To collect samples, the script needs to capture the TCP handshake at the beginning of new sessions (if TCP sessions are very long new values can be not available for a long time).
