@@ -20,14 +20,12 @@ generate_post_data()
   "username": "${username}",
   "password": "${password}",
   "metricType": "LATENCY_USERPLANE",
-  "configurationScript": "EXECUTE_COMMAND /opt/datashipper/add_input_config \$\$topic_name; \
-EXECUTE_COMMAND nohup /opt/datashipper/collect_tcp_avg_rtt -m -i ${captureInterface} \
+  "configurationScript": "EXECUTE_COMMAND sudo /opt/datashipper/add_input_config \$\$topic_name; \
+EXECUTE_COMMAND nohup sudo /opt/datashipper/collect_tcp_avg_rtt -m -i ${captureInterface} \
 -d ${dataShipperId} \
 -o /opt/datashipper/output/\$\$topic_name \
 >/dev/null 2>&1 < /dev/null &;",
-  "stopConfigScript": "EXECUTE_COMMAND pkill --full --oldest \$\$topic_name; \
-EXECUTE_COMMAND rm /opt/datashipper/configs/\$\$topic_name.yml; \
-EXECUTE_COMMAND sleep 2 && rm /opt/datashipper/output/\$\$topic_name;"
+  "stopConfigScript": "EXECUTE_COMMAND sudo /opt/datashipper/add_input_config -r \$\$topic_name;"
 }
 EOF
 }
