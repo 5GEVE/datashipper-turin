@@ -23,6 +23,16 @@
         owner: root
         group: root
         mode: '0755'
+    - name: Allow user to execute collect_data_rate without password
+      lineinfile:
+        dest: /etc/sudoers.d/collect_data_rate
+        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_data_rate"
+        create: yes
+        owner: root
+        group: root
+        mode: "0440"
+        state: present
+        validate: 'visudo -c -f %s'
     - name: Install collect_tcp_avg_rtt.sh
       copy:
         src: collect_tcp_avg_rtt.sh
@@ -30,3 +40,13 @@
         owner: root
         group: root
         mode: '0755'
+    - name: Allow user to execute collect_tcp_avg_rtt without password
+      lineinfile:
+        dest: /etc/sudoers.d/collect_tcp_avg_rtt
+        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_tcp_avg_rtt"
+        create: yes
+        owner: root
+        group: root
+        mode: "0440"
+        state: present
+        validate: 'visudo -c -f %s'

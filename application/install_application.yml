@@ -23,6 +23,16 @@
         owner: root
         group: root
         mode: '0755'
+    - name: Allow user to execute collect_cpu_usage without password
+      lineinfile:
+        dest: /etc/sudoers.d/collect_cpu_usage
+        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_cpu_usage"
+        create: yes
+        owner: root
+        group: root
+        mode: "0440"
+        state: present
+        validate: 'visudo -c -f %s'
     - name: Install collect_mem_usage.sh
       copy:
         src: collect_mem_usage.sh
@@ -30,6 +40,16 @@
         owner: root
         group: root
         mode: '0755'
+    - name: Allow user to execute collect_mem_usage without password
+      lineinfile:
+        dest: /etc/sudoers.d/collect_mem_usage
+        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_mem_usage"
+        create: yes
+        owner: root
+        group: root
+        mode: "0440"
+        state: present
+        validate: 'visudo -c -f %s'
     - name: Install collect_disk_usage.sh
       copy:
         src: collect_disk_usage.sh
@@ -37,3 +57,13 @@
         owner: root
         group: root
         mode: '0755'
+    - name: Allow user to execute collect_disk_usage without password
+      lineinfile:
+        dest: /etc/sudoers.d/collect_disk_usage
+        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_disk_usage"
+        create: yes
+        owner: root
+        group: root
+        mode: "0440"
+        state: present
+        validate: 'visudo -c -f %s'
