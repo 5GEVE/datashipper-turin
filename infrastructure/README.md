@@ -6,17 +6,16 @@
 
 Install the collectors with the provided playbook.
 
-> Note: You need to configure key-based SSH access to the remote host for this to work.
-
 ```shell script
-ansible-playbook -i "<host-ip-address>," -u <user> -K install_infrastructure.yml
+ansible-playbook -i "<host-ip-address>," -u <user> --private-key <key-file> -K install_infrastructure.yml
 ```
 
 > *Note:*
 >
 > - do not forget to include the comma after `<host-ip-address>`
-> - default user is `ubuntu`, override it with `-u`
-> - request for `sudo` password is prompted by `-K`
+> - default user is `ubuntu`, override it with `-u` specifying the user you created in [*Prerequisites* section](../README.md)
+> - You need to configure key-based SSH access to the remote host for this to work. Specify your key file with `--private-key`.
+> - `-K` requests the `sudo` password before executing
 
 ### Register data shippers on the IWF Repository
 

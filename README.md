@@ -10,6 +10,14 @@ Features:
 
 ## Install
 
+### Prerequisites
+
+On the target host, create a new user with permission to use `sudo`.
+The new user must also be able to SSH into the host machine with key-based access.
+
+This is required by Filebeat to work correctly as a systemd unit service.
+The installation procedure will also allow this user to execute the scripts contained in this repository with passwordless `sudo`.
+
 ### Filebeat
 
 Filebeat is needed to push any kind of metrics to Kafka and it must be installed first.
@@ -25,17 +33,16 @@ output.kafka:
 
 Install Filebeat as a systemd unit service with the provided Ansible playbook.
 
-> Note: You need to configure key-based SSH access to the remote host for this to work.
-
 ```shell script
-ansible-playbook -i "<host-ip-address>," -u <user> -K install_filebeat.yml
+ansible-playbook -i "<host-ip-address>," -u <user> --private-key <key-file> -K install_filebeat.yml
 ```
 
 > *Note:*
 >
 > - do not forget to include the comma after `<host-ip-address>`
-> - default user is `ubuntu`, ovveride it with `-u`
-> - request for `sudo` password is prompted by `-K`
+> - default user is `ubuntu`, override it with `-u` specifying the user you created in *Prerequisites*
+> - You need to configure key-based SSH access to the remote host for this to work. Specify your key file with `--private-key`.
+> - `-K` requests the `sudo` password before executing
 
 ### Infrastructure metrics collectors
 
