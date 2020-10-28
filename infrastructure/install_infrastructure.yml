@@ -15,7 +15,7 @@
         state: directory
         owner: root
         group: root
-        mode: '1777'
+        mode: '0755'
     - name: Install collect_data_rate.sh
       copy:
         src: collect_data_rate.sh
