@@ -1,0 +1,30 @@
+---
+testCaseBlueprint:
+  version: '1.0'
+  name: TCB Template Application Metrics
+  description: TestCase Blueprint template to collect application metrics
+  # In configurationScript we setup the filebeat and run the metric collection
+  # TODO check running stuff without sudo (change permissions in playbook)
+  configurationScript:
+    EXECUTE_COMMAND 10.0.0.5 $$user:$$password sudo /opt/datashipper/add_input_config $$metric.topic.cpu_consumption;
+    EXECUTE_COMMAND 10.0.0.5 $$user:$$password sudo /opt/datashipper/add_input_config $$metric.topic.memory_consumption;
+    EXECUTE_COMMAND 10.0.0.5 $$user:$$password sudo /opt/datashipper/add_input_config $$metric.topic.storage_consumption;
+    EXECUTE_COMMAND 10.0.0.5 $$user:$$password nohup sudo /opt/datashipper/collect_cpu_usage -o /opt/datashipper/output/$$metric.topic.cpu_consumption >/dev/null 2>&1 < /dev/null &;
+    EXECUTE_COMMAND nohup sudo /opt/datashipper/collect_mem_usage -o /opt/datashipper/output/$$metric.topic.memory_consumption >/dev/null 2>&1 < /dev/null &;
+    EXECUTE_COMMAND nohup sudo /opt/datashipper/collect_disk_usage -o /opt/datashipper/output/$$metric.topic.storage_consumption >/dev/null 2>&1 < /dev/null &;
+  # In executionScript we enforce the experiment duration and cleanup the configuration
+  executionScript:
+    SLEEP $$sleep$$time;
+    EXECUTE_COMMAND 10.0.0.5 $$user:$$password sudo /opt/datashipper/add_input_config -r $$metric.topic.cpu_consumption;
+    EXECUTE_COMMAND 10.0.0.5 $$user:$$password sudo /opt/datashipper/add_input_config -r $$metric.topic.memory_consumption;
+    EXECUTE_COMMAND 10.0.0.5 $$user:$$password sudo /opt/datashipper/add_input_config -r $$metric.topic.storage_consumption;
+  userParameters:
+    duration: $$sleep$$time
+    username: $$user
+    password: $$password
+  infrastructureParameters:
+    # IP address can also be set dynamically with a parameter like this
+    vnf.7feae41d-c01e-4ecf-949d-2d14a04665dc.extcp.cp_mgmt.ipaddress: ''
+    $$metric.topic.cpu_consumption: ''
+    $$metric.topic.memory_consumption: ''
+    $$metric.topic.storage_consumption: ''

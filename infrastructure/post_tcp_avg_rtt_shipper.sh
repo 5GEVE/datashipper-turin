@@ -4,7 +4,7 @@ IWFREPO_HOST=localhost
 IWFREPO_PORT=8087
 SITE_ID=1
 
-dataShipperId=ITALY_TURIN.USER_DATA_RATE_UPLINK.ul_data_rate
+dataShipperId=ITALY_TURIN.LATENCY_USERPLANE.tcp_avg_rtt
 ipAddress=10.50.7.24
 username=root
 password=password
@@ -19,16 +19,13 @@ generate_post_data()
   "ipAddress": "${ipAddress}",
   "username": "${username}",
   "password": "${password}",
-  "metricType": "USER_DATA_RATE_UPLINK",
-  "configurationScript": "EXECUTE_COMMAND /opt/datashipper/add_input_config \$\$topic_name; \
-EXECUTE_COMMAND nohup /opt/datashipper/collect-data-rate -b -i ${captureInterface} \
--r \
+  "metricType": "LATENCY_USERPLANE",
+  "configurationScript": "EXECUTE_COMMAND sudo /opt/datashipper/add_input_config \$\$topic_name; \
+EXECUTE_COMMAND nohup sudo /opt/datashipper/collect_tcp_avg_rtt -m -i ${captureInterface} \
 -d ${dataShipperId} \
--o /opt/datashipper/output/\$\$topic_name.csv \
+-o /opt/datashipper/output/\$\$topic_name \
 >/dev/null 2>&1 < /dev/null &;",
-  "stopConfigScript": "EXECUTE_COMMAND pkill --full --oldest \$\$topic_name; \
-EXECUTE_COMMAND rm /opt/datashipper/configs/\$\$topic_name.yml; \
-EXECUTE_COMMAND sleep 2 && rm /opt/datashipper/output/\$\$topic_name.csv;"
+  "stopConfigScript": "EXECUTE_COMMAND sudo /opt/datashipper/add_input_config -r \$\$topic_name;"
 }
 EOF
 }

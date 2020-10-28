@@ -4,11 +4,6 @@
   become: yes
 
   tasks:
-    # Collectors scripts
-    - name: Install packages
-      apt:
-        update_cache: yes
-        name: [ tshark, bc, gawk, coreutils, procps, jq ]
     - name: Ensure /opt/datashipper/output directory exists
       file:
         path: /opt/datashipper/output
@@ -25,27 +20,12 @@
         owner: root
         group: root
         mode: '0755'
-    - name: Install collect-data-rate.sh
-      copy:
-        src: collect-data-rate.sh
-        dest: /opt/datashipper/collect-data-rate
-        owner: root
-        group: root
-        mode: '0755'
-    - name: Install collect-tcp-avg-rtt.sh
-      copy:
-        src: collect-tcp-avg-rtt.sh
-        dest: /opt/datashipper/collect-tcp-avg-rtt
-        owner: root
-        group: root
-        mode: '0755'
-    # Filebeat
     - name: Install filebeat package
       apt:
         deb: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.8.1-amd64.deb
     - name: Backup original filebeat configuration
       command: mv /etc/filebeat/filebeat.yml /etc/filebeat/filebeat.yml.bak
-    - name: Copy new filebeat configuration (no inputs)
+    - name: Copy new filebeat configuration
       copy:
         src: filebeat.yml
         dest: /etc/filebeat/filebeat.yml
@@ -57,10 +37,20 @@
         state: restarted
         daemon_reload: yes
         name: filebeat
-    - name: Install add_input_config.sh
+    - name: Install add_input_config.sh to manage inputs
       copy:
         src: add_input_config.sh
         dest: /opt/datashipper/add_input_config
         owner: root
         group: root
         mode: '0755'
+    - name: Allow user to execute add_input_config without password
+      lineinfile:
+        dest: /etc/sudoers.d/add_input_config
+        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/add_input_config"
+        create: yes
+        owner: root
+        group: root
+        mode: "0440"
+        state: present
+        validate: 'visudo -c -f %s'

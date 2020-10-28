@@ -14,19 +14,23 @@ __base="$(basename "${__file}" .sh)"
 # defaults
 CONFIGS_DIR="/opt/datashipper/configs"
 OUTPUT_DIR="/opt/datashipper/output"
+REMOVE=0
 
 # Help command output
 usage(){
 echo "
+Adds an input configuration for Filebeat
+The file to be monitored gets the name of the TOPIC (without any extension)
 ${__base}.sh [OPTION...] TOPIC
-TOPIC; The name of the topic to be added
+TOPIC; The name of the topic
 -h; Print this help and exit
 -c <configs_dir>; Configs directory (default: ${CONFIGS_DIR})
--o <configs_dir>; Output directory (default: ${OUTPUT_DIR})
+-o <output_dir>; Output directory (default: ${OUTPUT_DIR})
+-r; Removes the configuration and kills any process associated to it
 " | column -t -s ";"
 }
 
-while getopts ":hc:o:" opt; do
+while getopts ":hc:o:r" opt; do
   case ${opt} in
     h )
       usage
@@ -37,6 +41,9 @@ while getopts ":hc:o:" opt; do
       ;;
     o )
       OUTPUT_DIR=${OPTARG}
+      ;;
+    r )
+      REMOVE=1
       ;;
     \? )
       usage
@@ -60,7 +67,13 @@ generate_yaml()
   fields:
     topic_id: ${TOPIC}
   paths:
-    - ${OUTPUT_DIR}/${TOPIC}.csv
+    - ${OUTPUT_DIR}/${TOPIC}
 EOF
 }
-generate_yaml > "${CONFIGS_DIR}/${TOPIC}.yml"
+
+if [ "${REMOVE}" = 0 ]; then
+  generate_yaml > "${CONFIGS_DIR}/${TOPIC}.yml"
+else
+  pkill --full --oldest "${TOPIC}"
+  [ -e "${CONFIGS_DIR}/${TOPIC}.yml" ] && rm "${CONFIGS_DIR}/${TOPIC}.yml"
+fi
