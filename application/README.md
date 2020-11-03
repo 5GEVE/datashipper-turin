@@ -7,13 +7,13 @@
 Install the collectors with the provided playbook.
 
 ```shell script
-ansible-playbook -i "<host-ip-address>," -u <user> --private-key <key-file> -K install_application.yml
+ansible-playbook -i "<host-ip-address>," -e 'ansible_ssh_user=<user>' --private-key <key-file> -K install_filebeat.yml
 ```
 
 > *Note:*
 >
 > - do not forget to include the comma after `<host-ip-address>`
-> - default user is `ubuntu`, override it with `-u` specifying the user you created in [*Prerequisites* section](../README.md)
+> - default user is `ubuntu`, override it with `-e` specifying the user you created in [*Prerequisites* section](../README.md)
 > - You need to configure key-based SSH access to the remote host for this to work. Specify your key file with `--private-key`.
 > - `-K` requests the `sudo` password before executing
 
