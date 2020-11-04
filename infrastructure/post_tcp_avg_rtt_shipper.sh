@@ -8,7 +8,7 @@ dataShipperId=ITALY_TURIN.LATENCY_USERPLANE.tcp_avg_rtt
 ipAddress=10.50.7.24
 username=root
 password=password
-captureInterface=ens4
+captureInterface=br_floating
 
 # Do not change anything below this line
 generate_post_data()

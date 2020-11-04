@@ -8,7 +8,7 @@ dataShipperId=ITALY_TURIN.USER_DATA_RATE_DOWNLINK.dl_data_rate
 ipAddress=10.50.7.24
 username=root
 password=password
-captureInterface=ens4
+captureInterface=br_floating
 
 # Do not change anything below this line
 generate_post_data()
