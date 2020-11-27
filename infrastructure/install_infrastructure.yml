@@ -50,3 +50,20 @@
         mode: "0440"
         state: present
         validate: 'visudo -c -f %s'
+    - name: Install collect_service_availability.sh
+      copy:
+        src: collect_service_availability.sh
+        dest: /opt/datashipper/collect_service_availability
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Allow user to execute collect_service_availability without password
+      lineinfile:
+        dest: /etc/sudoers.d/collect_service_availability
+        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_service_availability"
+        create: yes
+        owner: root
+        group: root
+        mode: "0440"
+        state: present
+        validate: 'visudo -c -f %s'
