@@ -35,6 +35,7 @@
     - name: Restart filebeat service
       systemd:
         state: restarted
+        enabled: yes
         daemon_reload: yes
         name: filebeat
     - name: Install add_input_config.sh to manage inputs
