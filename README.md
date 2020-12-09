@@ -12,11 +12,21 @@ Features:
 
 ### Prerequisites
 
-On the target host, create a new user with permission to use `sudo`.
-The new user must also be able to SSH into the host machine with key-based access.
-
 This is required by Filebeat to work correctly as a systemd unit service.
-The installation procedure will also allow this user to execute the scripts contained in this repository with passwordless `sudo`.
+
+On the target host, create a new user and add them to the `sudo` group.
+By default, forbid the new user to execute any command with sudo:
+
+```shell script
+$ sudo visudo
+
+# add the following line
+<your-username> ALL=(ALL) !ALL
+```
+
+The installation procedure will allow the new user to execute *only* the scripts contained in this repository with passwordless `sudo`.
+
+The new user must also be able to SSH into the host machine with key-based access.
 
 ### Filebeat
 
