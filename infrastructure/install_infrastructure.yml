@@ -67,3 +67,20 @@
         mode: "0440"
         state: present
         validate: 'visudo -c -f %s'
+    - name: Install collect_service_reliability.sh
+      copy:
+        src: collect_service_reliability.sh
+        dest: /opt/datashipper/collect_service_reliability
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Allow user to execute collect_service_reliability without password
+      lineinfile:
+        dest: /etc/sudoers.d/collect_service_reliability
+        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_service_reliability"
+        create: yes
+        owner: root
+        group: root
+        mode: "0440"
+        state: present
+        validate: 'visudo -c -f %s'
