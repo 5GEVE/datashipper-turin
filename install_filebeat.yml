@@ -2,6 +2,9 @@
 - hosts: all
   remote_user: ubuntu
   become: yes
+  vars:
+    datashipper_user: datashipper
+    datashipper_password: your-hashed-password
 
   tasks:
     - name: Ensure /opt/datashipper/output directory exists
@@ -45,10 +48,18 @@
         owner: root
         group: root
         mode: '0755'
-    - name: Allow user to execute add_input_config without password
+    - name: Ensure datashipper_user exists
+      user:
+        state: present
+        name: "{{ datashipper_user }}"
+        password: "{{ datashipper_password }}"
+        groups: sudo
+        create_home: no
+        shell: /bin/bash
+    - name: Allow datashipper_user to execute add_input_config without password
       lineinfile:
         dest: /etc/sudoers.d/add_input_config
-        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/add_input_config"
+        line: "{{ datashipper_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/add_input_config"
         create: yes
         owner: root
         group: root
