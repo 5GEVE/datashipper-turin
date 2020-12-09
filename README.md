@@ -10,9 +10,41 @@ Features:
 
 ## Install
 
+The installation is made with Ansible playbooks.
+You don't need to clone this repository on the host where you want to install the datashipper.
+You can install everything from your client machine.
+
 ### Prerequisites
 
-This is required by Filebeat to work correctly as a systemd unit service.
+In order to install the software with Ansible playbooks, you need a user with SSH access (with private/public key is better) and `sudo` privileges on the target host.
+This is the default user in all playbooks:
+
+```yaml
+  remote_user: ubuntu
+```
+
+You can change it by editing the YAML file, or by passing the following cli option: `-e 'ansible_ssh_user=<user>'`.
+
+The playbooks will also create a new user in your target host, dedicated to the data shipper.
+This user will have limited privileges and will be allowed to only execute the scripts in this repository.
+
+The default username and password for the new user are:
+
+```yaml
+  vars:
+    datashipper_user: datashipper
+    datashipper_password: your-hashed-password
+```
+
+The password is **required** to be changed and it must be hashed.
+Check [this link](https://docs.ansible.com/ansible/latest/reference_appendices/faq.html#how-do-i-generate-encrypted-passwords-for-the-user-module) for instructions on how to generate a password.
+Then, copy it into the YAML file or use the following cli option: `-e 'datashipper_password=<your-hashed-password>'`.
+
+After running the first playbook (see next section), check that you can access the host machine via SSH by using `datashipper_user` and `datashipper_password`.
+
+---
+**TODO** This must be done in playbooks
+
 
 On the target host, create a new user and add them to the `sudo` group.
 By default, forbid the new user to execute any command with sudo:
@@ -26,7 +58,8 @@ $ sudo visudo
 
 The installation procedure will allow the new user to execute *only* the scripts contained in this repository with passwordless `sudo`.
 
-The new user must also be able to SSH into the host machine with key-based access.
+---
+
 
 ### Filebeat
 
@@ -44,14 +77,17 @@ output.kafka:
 Install Filebeat as a systemd unit service with the provided Ansible playbook.
 
 ```shell script
-ansible-playbook -i "<host-ip-address>," -e 'ansible_ssh_user=<user>' --private-key <key-file> -K install_filebeat.yml
+ansible-playbook -i "<host-ip-address>," \
+    -e 'ansible_ssh_user=<user>' \
+    -e 'datashipper_password=<your-hashed-password>' \
+    --private-key <key-file> \
+    -K install_filebeat.yml
 ```
 
 > *Note:*
 >
 > - do not forget to include the comma after `<host-ip-address>`
-> - default user is `ubuntu`, override it with `-e` specifying the user you created in *Prerequisites*
-> - You need to configure key-based SSH access to the remote host for this to work. Specify your key file with `--private-key`.
+> - Use `--private-key` to specify your SSH key file.
 > - `-K` requests the `sudo` password before executing
 
 ### Infrastructure metrics collectors
