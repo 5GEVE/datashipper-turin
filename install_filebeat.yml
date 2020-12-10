@@ -56,9 +56,19 @@
         groups: sudo
         create_home: no
         shell: /bin/bash
+    - name: Forbid datashipper_user to execute any command with sudo
+      lineinfile:
+        dest: /etc/sudoers.d/10_datashipper_user_forbid
+        line: "{{ datashipper_user }} ALL=(ALL) !ALL"
+        create: yes
+        owner: root
+        group: root
+        mode: "0440"
+        state: present
+        validate: 'visudo -c -f %s'
     - name: Allow datashipper_user to execute add_input_config without password
       lineinfile:
-        dest: /etc/sudoers.d/add_input_config
+        dest: /etc/sudoers.d/20_add_input_config
         line: "{{ datashipper_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/add_input_config"
         create: yes
         owner: root

@@ -42,25 +42,6 @@ Then, copy it into the YAML file or use the following cli option: `-e 'datashipp
 
 After running the first playbook (see next section), check that you can access the host machine via SSH by using `datashipper_user` and `datashipper_password`.
 
----
-**TODO** This must be done in playbooks
-
-
-On the target host, create a new user and add them to the `sudo` group.
-By default, forbid the new user to execute any command with sudo:
-
-```shell script
-$ sudo visudo
-
-# add the following line
-<your-username> ALL=(ALL) !ALL
-```
-
-The installation procedure will allow the new user to execute *only* the scripts contained in this repository with passwordless `sudo`.
-
----
-
-
 ### Filebeat
 
 Filebeat is needed to push any kind of metrics to Kafka and it must be installed first.
@@ -92,9 +73,15 @@ ansible-playbook -i "<host-ip-address>," \
 
 ### Infrastructure metrics collectors
 
+**TODO**
+Check readme, add datashipper_user check in playbook.
+
 See [infrastructure/README.md](infrastructure/README.md)
 
 ### Application metrics collectors
+
+**TODO**
+Check readme, add datashipper_user check in playbook.
 
 See [application/README.md](application/README.md)
 
