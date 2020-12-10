@@ -2,20 +2,53 @@
 - hosts: all
   remote_user: ubuntu
   become: yes
+  vars:
+    datashipper_user: datashipper
+    datashipper_password: your-hashed-password
 
   tasks:
-    - name: Install packages
-      apt:
-        update_cache: yes
-        name: [ tshark, bc, gawk, coreutils, procps, jq ]
-    - name: Ensure /opt/datashipper directory exists
+
+    # Ensure some things exist
+    - name: Ensure /opt/datashipper/output directory exists
       file:
-        path: /opt/datashipper
+        path: /opt/datashipper/output
         recurse: yes
         state: directory
         owner: root
         group: root
         mode: '0755'
+    - name: Ensure /opt/datashipper/configs directory exists
+      file:
+        path: /opt/datashipper/configs
+        recurse: yes
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Ensure datashipper_user exists
+      user:
+        state: present
+        name: "{{ datashipper_user }}"
+        password: "{{ datashipper_password }}"
+        groups: sudo
+        create_home: no
+        shell: /bin/bash
+    - name: Forbid datashipper_user to execute any command with sudo
+      lineinfile:
+        dest: /etc/sudoers.d/10_datashipper_user_forbid
+        line: "{{ datashipper_user }} ALL=(ALL) !ALL"
+        create: yes
+        owner: root
+        group: root
+        mode: "0440"
+        state: present
+        validate: 'visudo -c -f %s'
+
+    # Install infrastructure stuff
+    - name: Install packages
+      apt:
+        update_cache: yes
+        name: [ tshark, bc, gawk, coreutils, procps, jq ]
     - name: Install collect_data_rate.sh
       copy:
         src: collect_data_rate.sh
@@ -25,8 +58,8 @@
         mode: '0755'
     - name: Allow user to execute collect_data_rate without password
       lineinfile:
-        dest: /etc/sudoers.d/collect_data_rate
-        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_data_rate"
+        dest: /etc/sudoers.d/20_collect_data_rate
+        line: "{{ datashipper_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_data_rate"
         create: yes
         owner: root
         group: root
@@ -42,8 +75,8 @@
         mode: '0755'
     - name: Allow user to execute collect_tcp_avg_rtt without password
       lineinfile:
-        dest: /etc/sudoers.d/collect_tcp_avg_rtt
-        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_tcp_avg_rtt"
+        dest: /etc/sudoers.d/20_collect_tcp_avg_rtt
+        line: "{{ datashipper_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_tcp_avg_rtt"
         create: yes
         owner: root
         group: root
@@ -59,8 +92,8 @@
         mode: '0755'
     - name: Allow user to execute collect_service_availability without password
       lineinfile:
-        dest: /etc/sudoers.d/collect_service_availability
-        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_service_availability"
+        dest: /etc/sudoers.d/20_collect_service_availability
+        line: "{{ datashipper_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_service_availability"
         create: yes
         owner: root
         group: root
@@ -76,8 +109,8 @@
         mode: '0755'
     - name: Allow user to execute collect_service_reliability without password
       lineinfile:
-        dest: /etc/sudoers.d/collect_service_reliability
-        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_service_reliability"
+        dest: /etc/sudoers.d/20_collect_service_reliability
+        line: "{{ datashipper_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_service_reliability"
         create: yes
         owner: root
         group: root
