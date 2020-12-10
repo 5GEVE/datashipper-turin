@@ -73,15 +73,9 @@ ansible-playbook -i "<host-ip-address>," \
 
 ### Infrastructure metrics collectors
 
-**TODO**
-Check readme, add datashipper_user check in playbook.
-
 See [infrastructure/README.md](infrastructure/README.md)
 
 ### Application metrics collectors
-
-**TODO**
-Check readme, add datashipper_user check in playbook.
 
 See [application/README.md](application/README.md)
 
