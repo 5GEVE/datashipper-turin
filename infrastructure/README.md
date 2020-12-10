@@ -12,7 +12,7 @@ ansible-playbook -i "<host-ip-address>," \
     -e 'ansible_ssh_user=<user>' \
     -e 'datashipper_password=<your-hashed-password>' \
     --private-key <key-file> \
-    -K install_filebeat.yml
+    -K install_infrastructure.yml
 ```
 
 > *Note:*
@@ -20,7 +20,6 @@ ansible-playbook -i "<host-ip-address>," \
 > - do not forget to include the comma after `<host-ip-address>`
 > - Use `--private-key` to specify your SSH key file.
 > - `-K` requests the `sudo` password before executing
-
 
 ### Register data shippers on the IWF Repository
 
