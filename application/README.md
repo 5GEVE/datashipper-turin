@@ -5,16 +5,20 @@
 ### Collectors
 
 Install the collectors with the provided playbook.
+See [*Prerequisites* section](../README.md).
 
 ```shell script
-ansible-playbook -i "<host-ip-address>," -e 'ansible_ssh_user=<user>' --private-key <key-file> -K install_filebeat.yml
+ansible-playbook -i "<host-ip-address>," \
+    -e 'ansible_ssh_user=<user>' \
+    -e 'datashipper_password=<your-hashed-password>' \
+    --private-key <key-file> \
+    -K install_application.yml
 ```
 
 > *Note:*
 >
 > - do not forget to include the comma after `<host-ip-address>`
-> - default user is `ubuntu`, override it with `-e` specifying the user you created in [*Prerequisites* section](../README.md)
-> - You need to configure key-based SSH access to the remote host for this to work. Specify your key file with `--private-key`.
+> - Use `--private-key` to specify your SSH key file.
 > - `-K` requests the `sudo` password before executing
 
 ### Use the TestCase Blueprint template

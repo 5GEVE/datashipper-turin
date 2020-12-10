@@ -2,20 +2,53 @@
 - hosts: all
   remote_user: ubuntu
   become: yes
+  vars:
+    datashipper_user: datashipper
+    datashipper_password: your-hashed-password
 
   tasks:
-    - name: Install packages
-      apt:
-        update_cache: yes
-        name: [ sysstat, bc, gawk, coreutils, procps, jq ]
-    - name: Ensure /opt/datashipper directory exists
+
+    # Ensure some things exist
+    - name: Ensure /opt/datashipper/output directory exists
       file:
-        path: /opt/datashipper
+        path: /opt/datashipper/output
         recurse: yes
         state: directory
         owner: root
         group: root
         mode: '0755'
+    - name: Ensure /opt/datashipper/configs directory exists
+      file:
+        path: /opt/datashipper/configs
+        recurse: yes
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Ensure datashipper_user exists
+      user:
+        state: present
+        name: "{{ datashipper_user }}"
+        password: "{{ datashipper_password }}"
+        groups: sudo
+        create_home: no
+        shell: /bin/bash
+    - name: Forbid datashipper_user to execute any command with sudo
+      lineinfile:
+        dest: /etc/sudoers.d/10_datashipper_user_forbid
+        line: "{{ datashipper_user }} ALL=(ALL) !ALL"
+        create: yes
+        owner: root
+        group: root
+        mode: "0440"
+        state: present
+        validate: 'visudo -c -f %s'
+
+    # Install application stuff
+    - name: Install packages
+      apt:
+        update_cache: yes
+        name: [ sysstat, bc, gawk, coreutils, procps, jq ]
     - name: Install collect_cpu_usage.sh
       copy:
         src: collect_cpu_usage.sh
@@ -25,8 +58,8 @@
         mode: '0755'
     - name: Allow user to execute collect_cpu_usage without password
       lineinfile:
-        dest: /etc/sudoers.d/collect_cpu_usage
-        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_cpu_usage"
+        dest: /etc/sudoers.d/20_collect_cpu_usage
+        line: "{{ datashipper_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_cpu_usage"
         create: yes
         owner: root
         group: root
@@ -42,8 +75,8 @@
         mode: '0755'
     - name: Allow user to execute collect_mem_usage without password
       lineinfile:
-        dest: /etc/sudoers.d/collect_mem_usage
-        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_mem_usage"
+        dest: /etc/sudoers.d/20_collect_mem_usage
+        line: "{{ datashipper_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_mem_usage"
         create: yes
         owner: root
         group: root
@@ -59,8 +92,8 @@
         mode: '0755'
     - name: Allow user to execute collect_disk_usage without password
       lineinfile:
-        dest: /etc/sudoers.d/collect_disk_usage
-        line: "{{ ansible_ssh_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_disk_usage"
+        dest: /etc/sudoers.d/20_collect_disk_usage
+        line: "{{ datashipper_user }} ALL=(ALL) NOPASSWD: /opt/datashipper/collect_disk_usage"
         create: yes
         owner: root
         group: root
