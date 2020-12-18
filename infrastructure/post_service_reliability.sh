@@ -5,12 +5,12 @@ IWFREPO_HOST=localhost
 IWFREPO_PORT=8087
 SITE_ID=1
 
-dataShipperId=ITALY_TURIN.SERVICE_RELIABILITY.service_reliability
+dataShipperId=ITALY_TURIN.RELIABILITY.service_reliability
 ipAddress=10.50.7.24
 username=root
 password=password
 captureInterface=br_floating
-metricType=SERVICE_RELIABILITY
+metricType=RELIABILITY
 scriptName=collect_service_reliability
 
 # Do not change anything below this line

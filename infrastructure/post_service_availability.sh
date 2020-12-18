@@ -5,12 +5,12 @@ IWFREPO_HOST=localhost
 IWFREPO_PORT=8087
 SITE_ID=1
 
-dataShipperId=ITALY_TURIN.SERVICE_AVAILABILITY.service_availability
+dataShipperId=ITALY_TURIN.AVAILABILITY.service_availability
 ipAddress=10.50.7.24
 username=root
 password=password
 captureInterface=br_floating
-metricType=SERVICE_AVAILABILITY
+metricType=AVAILABILITY
 scriptName=collect_service_availability
 
 # Do not change anything below this line
