@@ -23,6 +23,7 @@ generate_post_data()
   "configurationScript": "EXECUTE_COMMAND sudo /opt/datashipper/add_input_config \$\$topic_name; \
 EXECUTE_COMMAND nohup sudo /opt/datashipper/collect_data_rate -b -i ${captureInterface} \
 -d ${dataShipperId} \
+-a \$\$vnfIpAddresses \
 -o /opt/datashipper/output/\$\$topic_name \
 >/dev/null 2>&1 < /dev/null &;",
   "stopConfigScript": "EXECUTE_COMMAND sudo /opt/datashipper/add_input_config -r \$\$topic_name;"
