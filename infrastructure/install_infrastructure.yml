@@ -43,6 +43,12 @@
         mode: "0440"
         state: present
         validate: 'visudo -c -f %s'
+    - name: Fix sudo unable to resolve host problem
+      lineinfile:
+        dest: /etc/hosts
+        line: "127.0.1.1 {{ inventory_hostname_short }}"
+        create: no
+        state: present
 
     # Install infrastructure stuff
     - name: Install packages
