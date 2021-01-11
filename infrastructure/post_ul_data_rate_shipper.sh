@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 IWFREPO_HOST=localhost
 IWFREPO_PORT=8087
@@ -9,6 +10,8 @@ ipAddress=10.50.7.24
 username=root
 password=password
 captureInterface=br_floating
+metricType=USER_DATA_RATE_UPLINK
+scriptName=collect_data_rate
 
 # Do not change anything below this line
 generate_post_data()
@@ -19,9 +22,9 @@ generate_post_data()
   "ipAddress": "${ipAddress}",
   "username": "${username}",
   "password": "${password}",
-  "metricType": "USER_DATA_RATE_UPLINK",
+  "metricType": "${metricType}",
   "configurationScript": "EXECUTE_COMMAND sudo /opt/datashipper/add_input_config \$\$topic_name; \
-EXECUTE_COMMAND nohup sudo /opt/datashipper/collect_data_rate -b -i ${captureInterface} \
+EXECUTE_COMMAND nohup sudo /opt/datashipper/${scriptName} -b -i ${captureInterface} \
 -r \
 -d ${dataShipperId} \
 -a \$\$vnfIpAddresses \
