@@ -23,13 +23,16 @@ generate_post_data()
   "username": "${username}",
   "password": "${password}",
   "metricType": "${metricType}",
-  "configurationScript": "EXECUTE_COMMAND sudo /opt/datashipper/add_input_config \$\$topic_name; \
-EXECUTE_COMMAND nohup sudo /opt/datashipper/${scriptName} -b -i ${captureInterface} \
+  "configurationScript": "EXECUTE_COMMAND \$\$ipAddress \$\$username:\$\$password \
+sudo /opt/datashipper/add_input_config \$\$topic_name; \
+EXECUTE_COMMAND \$\$ipAddress \$\$username:\$\$password \
+nohup sudo /opt/datashipper/${scriptName} -b -i ${captureInterface} \
 -d ${dataShipperId} \
 -a \$\$vnfIpAddresses \
 -o /opt/datashipper/output/\$\$topic_name \
 >/dev/null 2>&1 < /dev/null &;",
-  "stopConfigScript": "EXECUTE_COMMAND sudo /opt/datashipper/add_input_config -r \$\$topic_name;"
+  "stopConfigScript": "EXECUTE_COMMAND \$\$ipAddress \$\$username:\$\$password \
+sudo /opt/datashipper/add_input_config -r \$\$topic_name;"
 }
 EOF
 }
