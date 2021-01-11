@@ -31,7 +31,7 @@
         name: "{{ datashipper_user }}"
         password: "{{ datashipper_password }}"
         groups: sudo
-        create_home: no
+        create_home: yes
         shell: /bin/bash
     - name: Forbid datashipper_user to execute any command with sudo
       lineinfile:
