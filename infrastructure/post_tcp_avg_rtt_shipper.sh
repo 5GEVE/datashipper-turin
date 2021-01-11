@@ -5,12 +5,12 @@ IWFREPO_HOST=localhost
 IWFREPO_PORT=8087
 SITE_ID=1
 
-dataShipperId=ITALY_TURIN.LATENCY_USERPLANE.tcp_avg_rtt
+dataShipperId=ITALY_TURIN.LATENCY_USERPLANE_RTT.tcp_avg_rtt
 ipAddress=10.50.7.24
 username=root
 password=password
 captureInterface=br_floating
-metricType=LATENCY_USERPLANE
+metricType=LATENCY_USERPLANE_RTT
 scriptName=collect_tcp_avg_rtt
 
 # Do not change anything below this line
